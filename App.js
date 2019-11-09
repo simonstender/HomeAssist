@@ -2,19 +2,29 @@ import React, {Component} from 'react';
 import { TouchableOpacity, Image, AppRegistry, StyleSheet, Text, View } from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import {createDrawerNavigator} from 'react-navigation-drawer'
+import {createDrawerNavigator} from 'react-navigation-drawer';
 
 import Login from "./view/Login"
 import Overview from "./view/Overview"
+import Bathroom from "./view/Bathroom"
+import Bedroom from "./view/Bedroom"
+import Hallway from "./view/Hallway"
+import Kitchen from "./view/Kitchen"
+import Livingroom from "./view/Livingroom"
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
-  OverviewScreen: Overview
+  OverviewScreen: Overview,
+  HallwayScreen: Hallway,
+  LivingroomScreen: Livingroom,
+  BathroomScreen: Bathroom,
+  KitchenScreen: Kitchen,
+  BedroomScreen: Bedroom,
 },
 {
   defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: '#ADADAD',
+      backgroundColor: '#696969',
       height: 80,
       borderBottomWidth: 0,
     },
@@ -30,10 +40,16 @@ const AppStackNavigator = createStackNavigator({
 
 const AppDrawerNavigator = createDrawerNavigator({
   Stäng: AppStackNavigator,
+  OverviewScreen: Overview,
+  HallwayScreen: Hallway,
+  LivingroomScreen: Livingroom,
+  BathroomScreen: Bathroom,
+  KitchenScreen: Kitchen,
+  BedroomScreen: Bedroom,
 },
 {
   drawerLockMode: "locked-closed",
-  drawerBackgroundColor: "#ADADAD",
+  drawerBackgroundColor: "#696969",
   contentOptions:{
     labelStyle: {
       fontSize: 24,

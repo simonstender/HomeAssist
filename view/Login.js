@@ -1,24 +1,10 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity} from 'react-native';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam("title", "Navigering"),
-      headerLeft: <TouchableOpacity
-      onPress={() => navigation.openDrawer()}>
-      <Image
-      style={{ height: 90, width: 90, paddingLeft: 30 }}
-      source={require("../assets/icon.png")}
-      />
-      </TouchableOpacity>,
-      headerRight: <TouchableOpacity
-      onPress={() => navigation.navigate("OverviewScreen")}>
-      <Image
-      style={{ height: 60, width: 60, paddingRight: 30, left: -20 }}
-      source={require("../assets/icon.png")}
-      />
-      </TouchableOpacity>
+      header: null,
     };
   };
   constructor(props){
@@ -31,7 +17,7 @@ export default class Login extends Component {
 
   componentDidMount(){
     this._isMounted = true;
-
+    this.props.navigation.navigate("BedroomScreen");
   }
 
   componentWillUnmount(){
@@ -40,9 +26,17 @@ export default class Login extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.text}>Hej</Text>
-      </View>
+      <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
+        <Text style={styles.text}>Home Assist</Text>
+          <View style={styles.button}>
+            <Button
+              title="Connect to your home"
+              color="green"
+              style={styles.button}
+              onPress={() => this.props.navigation.navigate("OverviewScreen")}>
+            </Button>
+          </View>
+      </ImageBackground>
     );
   }
 }
@@ -52,5 +46,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    opacity: 50,
   },
+  text: {
+    fontSize: 50,
+    color: "white",
+    fontStyle: "italic",
+    fontWeight: "500",
+    textDecorationLine: "underline",
+    textShadowColor: "green",
+    textShadowRadius: 8,
+    bottom: 150
+  },
+  button: {
+    position: "absolute",
+    bottom: 160
+  }
 });
