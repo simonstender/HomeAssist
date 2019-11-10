@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList, AsyncStorage} from 'react-native';
 
 export default class Overview extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -19,17 +19,35 @@ export default class Overview extends Component {
     this._isMounted = false;
     this.state = {
       isFetching: false,
-      bajs: "bajs",
-      data: [{room: "0", title: "Hallway", lights: "On", buttonColor: "red"},
-      {room: "1", title: "Livingroom", lights: "On", buttonColor: "red"},
-      {room: "2", title: "Bathroom", lights: "On", buttonColor: "red"},
-      {room: "3", title: "Kitchen", lights: "On", buttonColor: "red"},
-      {room: "4", title: "Bedroom", lights: "On", buttonColor: "red"}]
+      data: require("../db/Rooms.json")
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
+  }
+
+  componentWillReceiveProps(devices){
+    var found = false;
+    for (var i = 0; i < Object.keys(devices.roomData).length; i++) {
+      if (devices.roomData[i].buttonColor == 'green') {
+        for (var j = 0; j < Object.keys(this.state.data).length; j++) {
+          if (this.state.data[j].title == devices.roomData[i].room) {
+            this.state.data[j].buttonColor = 'green';
+            this.state.data[j].lights = "Off"
+            found = true;
+          }
+        }
+      }
+      else if (devices.roomData[i].buttonColor == 'red' && found == false) {
+        for (var j = 0; j < Object.keys(this.state.data).length; j++) {
+          if (this.state.data[j].title == devices.roomData[i].room) {
+            this.state.data[j].buttonColor = 'red';
+            this.state.data[j].lights = "On"
+          }
+        }
+      }
+    }
   }
 
   componentWillUnmount(){
@@ -38,13 +56,15 @@ export default class Overview extends Component {
 
   onRefresh = (index) => {
     this.setState({isFetching: true})
-    if (this.state.data[index].lights == "On") {
-      this.state.data[index].lights = "Off";
-      this.state.data[index].buttonColor = "green";
-    }
-    else if (this.state.data[index].lights == "Off") {
-      this.state.data[index].lights = "On";
-      this.state.data[index].buttonColor = "red";
+    if (typeof index !== "undefined") {
+      if (this.state.data[index].lights == "On") {
+        this.state.data[index].lights = "Off";
+        this.state.data[index].buttonColor = "green";
+      }
+      else if (this.state.data[index].lights == "Off") {
+        this.state.data[index].lights = "On";
+        this.state.data[index].buttonColor = "red";
+      }
     }
     this.setState({isFetching: false})
   }
@@ -71,6 +91,10 @@ export default class Overview extends Component {
           keyExtractor={item => item.room}
           onRefresh={() => this.onRefresh()}
           refreshing={this.state.isFetching}
+        />
+        <Button
+        title="Blick"
+        onPress={() => alert(JSON.stringify(this.state.data))}
         />
       </View>
     );

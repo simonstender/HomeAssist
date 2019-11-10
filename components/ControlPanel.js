@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, FlatList} from 'react-native';
 import Slider from 'react-native-slider';
 
+import Overview from "../view/Overview"
+
 export default class ControlPanel extends Component {
   constructor(props){
     super(props);
@@ -77,6 +79,7 @@ export default class ControlPanel extends Component {
         onRefresh={() => this.onRefresh()}
         refreshing={this.state.isFetching}
         />
+        <Overview roomData={this.props.data}/>
       </View>
     );
   }

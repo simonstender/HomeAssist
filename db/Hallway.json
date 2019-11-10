@@ -1,0 +1,4 @@
+[
+  {id: "0", name: "Ultra lamp", isLight: true, remainingLight: 500, lights: "On", buttonColor: "red", room: "Hallway"},
+  {id: "1", name: "Radio", isLight: false, remainingLight: 200, lights: "On", buttonColor: "red", room: "Hallway"}
+]

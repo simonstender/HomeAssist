@@ -1,0 +1,4 @@
+[
+  {id: "0", name: "Big lamp", isLight: true, remainingLight: 500, lights: "On", buttonColor: "red", room: "Livingroom"},
+  {id: "1", name: "Tv", isLight: false, remainingLight: 200, lights: "On", buttonColor: "red", room: "Livingroom"}
+]

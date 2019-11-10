@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
+import Slider from 'react-native-slider';
 
-import ControlPanel from "../components/ControlPanel"
+import Overview from "../view/Overview"
 
 export default class Bathroom extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -21,8 +22,8 @@ export default class Bathroom extends Component {
     super(props);
     this._isMounted = false;
     this.state = {
-      data: [{id: "0", name: "Roof lamp", isLight: true, remainingLight: 500, lights: "On", buttonColor: "red"},
-            {id: "1", name: "Brödrost", isLight: false, remainingLight: 200, lights: "On", buttonColor: "red"}]
+      isFetching: false,
+      data: require("../db/Bathroom.json")
     }
   }
 
@@ -30,7 +31,7 @@ export default class Bathroom extends Component {
     this._isMounted = true;
     this.props.navigation.setParams({
       headerRight: <TouchableOpacity
-      onPress={() => this.addObject()}
+      onPress={() => this.addObjectAlert()}
       >
       <Image
       style={{ height: 44, width: 44, right: 10 }}
@@ -44,36 +45,115 @@ export default class Bathroom extends Component {
     this._isMounted = false;
   }
 
-  addObject(){
+  addObjectAlert(){
     Alert.alert(
-      'Select type',
-      '',
+      'New device detected',
+      'Would you like to add it?',
       [
         {
-          text: 'Add light',
-          onPress: () => this.props.navigation.navigate("AddLightScreen"),
+          text: 'Yes',
+          onPress: () => this.addObject(),
           style: 'cancel',
         },
         {
-          text: "Add other",
-          onPress: () => this.props.navigation.navigate("AddOtherScreen"),
+          text: "No",
           style: 'cancel',
         }
       ]
     )
   }
 
+  addObject(){
+    this.setState({isFetching: true});
+    this.state.data[Object.keys(this.state.data).length] = {id: "2", name: "Floor light", isLight: true, remainingLight: 200, lights: "On", buttonColor: "red", room: "Bathroom"}
+    this.setState({isFetching: false});
+  }
+
+  renderItem = ({ item, index }) => {
+    if (this.state.data[index].isLight == true) {
+      return (
+        <View style={styles.item}>
+          <Text style={styles.title}>{item.name} </Text>
+          <Button
+            title={"Power " + this.state.data[index].lights}
+            color={this.state.data[index].buttonColor}
+            onPress={() => this.onRefresh(index)}
+          />
+          <Slider
+            style={{alignSelf: "center", width: 200, height: 40}}
+            minimumValue={0}
+            maximumValue={1}
+            minimumTrackTintColor="#FFFFFF"
+            maximumTrackTintColor="#000000"
+          />
+        </View>
+        );
+    } else if (this.state.data[index].isLight == false) {
+      return (
+        <View style={styles.item}>
+          <Text style={styles.title}>{item.name} </Text>
+          <Button
+            title={"Power " + this.state.data[index].lights}
+            color={this.state.data[index].buttonColor}
+            onPress={() => this.onRefresh(index)}
+          />
+        </View>
+        );
+    }
+
+  };
+
+  onRefresh = (index) => {
+    this.setState({isFetching: true})
+    if (this.state.data[index].lights == "On") {
+      this.state.data[index].lights = "Off";
+      this.state.data[index].buttonColor = "green";
+    }
+    else if (this.state.data[index].lights == "Off") {
+      this.state.data[index].lights = "On";
+      this.state.data[index].buttonColor = "red";
+    }
+    this.setState({isFetching: false})
+  }
+
   render() {
     return (
-      <ControlPanel data={this.state.data} />
+      <View style={styles.container}>
+        <FlatList
+        data={this.state.data}
+        renderItem={this.renderItem}
+        keyExtractor={item => item.id}
+        onRefresh={() => this.onRefresh()}
+        refreshing={this.state.isFetching}
+        />
+        <Overview roomData={this.state.data}/>
+      </View>
     );
   }
-}
+  }
 
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "black"
   },
-});
+  text: {
+    textAlign: "center"
+  },
+  item: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    backgroundColor: '#696969',
+    padding: 8,
+    marginVertical: 8,
+    marginHorizontal: 16,
+  },
+  title: {
+    fontSize: 24,
+    textShadowColor: "white",
+    textShadowRadius: 8,
+    alignSelf: "center"
+  },
+  });
