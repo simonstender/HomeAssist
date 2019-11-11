@@ -27,26 +27,31 @@ export default class Overview extends Component {
     this._isMounted = true;
   }
 
-  componentWillReceiveProps(devices){
-    var found = false;
-    for (var i = 0; i < Object.keys(devices.roomData).length; i++) {
-      if (devices.roomData[i].buttonColor == 'green') {
-        for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-          if (this.state.data[j].title == devices.roomData[i].room) {
-            this.state.data[j].buttonColor = 'green';
-            this.state.data[j].lights = "Off"
-            found = true;
+  static getDerivedStateFromProps(devices){
+    if (typeof devices.roomData != "undefined") {
+      var found = false;
+      for (var i = 0; i < Object.keys(devices.roomData).length; i++) {
+        if (devices.roomData[i].buttonColor == 'green') {
+          for (var j = 0; j < Object.keys(this.state.data).length; j++) {
+            if (this.state.data[j].title == devices.roomData[i].room) {
+              this.state.data[j].buttonColor = 'green';
+              this.state.data[j].lights = "Off"
+              found = true;
+            }
+          }
+        }
+        else if (devices.roomData[i].buttonColor == 'red' && found == false) {
+          for (var j = 0; j < Object.keys(this.state.data).length; j++) {
+            if (this.state.data[j].title == devices.roomData[i].room) {
+              this.state.data[j].buttonColor = 'red';
+              this.state.data[j].lights = "On"
+            }
           }
         }
       }
-      else if (devices.roomData[i].buttonColor == 'red' && found == false) {
-        for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-          if (this.state.data[j].title == devices.roomData[i].room) {
-            this.state.data[j].buttonColor = 'red';
-            this.state.data[j].lights = "On"
-          }
-        }
-      }
+    }
+    else {
+      return null;
     }
   }
 
@@ -91,10 +96,6 @@ export default class Overview extends Component {
           keyExtractor={item => item.room}
           onRefresh={() => this.onRefresh()}
           refreshing={this.state.isFetching}
-        />
-        <Button
-        title="Blick"
-        onPress={() => alert(JSON.stringify(this.state.data))}
         />
       </View>
     );

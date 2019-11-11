@@ -1,2 +1,0 @@
-# LightAssist
-App för mobilkursen

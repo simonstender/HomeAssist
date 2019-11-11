@@ -126,7 +126,6 @@ export default class Hallway extends Component {
         onRefresh={() => this.onRefresh()}
         refreshing={this.state.isFetching}
         />
-        <Overview roomData={this.state.data}/>
       </View>
     );
   }
