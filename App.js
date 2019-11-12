@@ -6,20 +6,12 @@ import {createDrawerNavigator} from 'react-navigation-drawer';
 
 import Login from "./view/Login"
 import Overview from "./view/Overview"
-import Bathroom from "./view/Bathroom"
-import Bedroom from "./view/Bedroom"
-import Hallway from "./view/Hallway"
-import Kitchen from "./view/Kitchen"
-import Livingroom from "./view/Livingroom"
+import RoomScreen from "./view/RoomScreen"
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
   OverviewScreen: Overview,
-  HallwayScreen: Hallway,
-  LivingroomScreen: Livingroom,
-  BathroomScreen: Bathroom,
-  KitchenScreen: Kitchen,
-  BedroomScreen: Bedroom,
+  RoomScreenScreen: RoomScreen
 },
 {
   defaultNavigationOptions: {
@@ -40,12 +32,7 @@ const AppStackNavigator = createStackNavigator({
 
 const AppDrawerNavigator = createDrawerNavigator({
   Stäng: AppStackNavigator,
-  OverviewScreen: Overview,
-  HallwayScreen: Hallway,
-  LivingroomScreen: Livingroom,
-  BathroomScreen: Bathroom,
-  KitchenScreen: Kitchen,
-  BedroomScreen: Bedroom,
+  OverviewScreen: Overview
 },
 {
   drawerLockMode: "locked-closed",

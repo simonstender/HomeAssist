@@ -4,7 +4,7 @@ import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, Toucha
 export default class Overview extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam("title", "Overview"),
+      title: navigation.getParam("title"),
       headerLeft: <TouchableOpacity
       onPress={() => navigation.openDrawer()}>
       <Image
@@ -19,44 +19,91 @@ export default class Overview extends Component {
     this._isMounted = false;
     this.state = {
       isFetching: false,
-      data: require("../db/Rooms.json")
+      numberOfDevices: [],
+      data: []
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
+    this.fetchRooms();
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.updateRooms();
+    });
   }
 
-  static getDerivedStateFromProps(devices){
-    if (typeof devices.roomData != "undefined") {
-      var found = false;
-      for (var i = 0; i < Object.keys(devices.roomData).length; i++) {
-        if (devices.roomData[i].buttonColor == 'green') {
+  fetchRooms(){
+    this.setState({isFetching: true})
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+      method: "GET",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+   },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      for (var i = 0; i < Object.keys(data).length; i++) {
+        this.state.data[i] = data[i]
+      }
+    })
+    .then(this.setState({isFetching: false}))
+  }
+
+  updateRooms(){
+    this.setState({isFetching: true})
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+      method: "GET",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+   },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      for (var i = 0; i < Object.keys(this.state.data).length; i++) {
+        this.state.numberOfDevices[i] = 0;
+      }
+      for (var i = 0; i < Object.keys(data).length; i++) {
+        if (data[i].lights == 'Off') {
           for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-            if (this.state.data[j].title == devices.roomData[i].room) {
+            if (this.state.data[j]._key == data[i].room) {
+              this.state.data[j].lights = "Off";
               this.state.data[j].buttonColor = 'green';
-              this.state.data[j].lights = "Off"
-              found = true;
             }
           }
-        }
-        else if (devices.roomData[i].buttonColor == 'red' && found == false) {
+        } else if (data[i].lights == "On") {
           for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-            if (this.state.data[j].title == devices.roomData[i].room) {
-              this.state.data[j].buttonColor = 'red';
-              this.state.data[j].lights = "On"
+            if (this.state.data[j]._key == data[i].room) {
+              this.state.numberOfDevices[j]++;
+              if (this.state.numberOfDevices[j] == this.state.data[j].devices) {
+                this.state.data[j].lights = "On";
+                this.state.data[j].buttonColor = "red";
+              }
             }
           }
         }
       }
-    }
-    else {
-      return null;
-    }
+      this.setState({isFetching: false})
+    })
   }
 
   componentWillUnmount(){
     this._isMounted = false;
+  }
+
+  updateRoom(item, status, color){
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + item._key, {
+      method: "PATCH",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       lights: status,
+       buttonColor: color,
+     })
+    })
   }
 
   onRefresh = (index) => {
@@ -65,10 +112,12 @@ export default class Overview extends Component {
       if (this.state.data[index].lights == "On") {
         this.state.data[index].lights = "Off";
         this.state.data[index].buttonColor = "green";
+        this.updateRoom(this.state.data[index], "Off", "green")
       }
       else if (this.state.data[index].lights == "Off") {
         this.state.data[index].lights = "On";
         this.state.data[index].buttonColor = "red";
+        this.updateRoom(this.state.data[index], "On", "red")
       }
     }
     this.setState({isFetching: false})
@@ -77,7 +126,10 @@ export default class Overview extends Component {
   renderItem = ({ item, index }) => {
     return (
       <View style={styles.item}>
-        <Text style={styles.title}>{item.title}  </Text><Text>{item.activity}  </Text>
+        <TouchableOpacity
+         onPress={() => this.props.navigation.navigate("RoomScreenScreen", {title: item._key})}>
+        <Text style={styles.title}>{item._key}  </Text><Text>{item.activity}  </Text>
+        </TouchableOpacity>
         <Button
           title={"Lights " + this.state.data[index].lights}
           color={this.state.data[index].buttonColor}
@@ -93,7 +145,7 @@ export default class Overview extends Component {
         <FlatList
           data={this.state.data}
           renderItem={this.renderItem}
-          keyExtractor={item => item.room}
+          keyExtractor={item => item._key}
           onRefresh={() => this.onRefresh()}
           refreshing={this.state.isFetching}
         />

@@ -1,4 +1,0 @@
-[
-  {id: "0", name: "Roof lamp", isLight: true, remainingLight: 500, lights: "On", buttonColor: "red", room: "Kitchen"},
-  {id: "1", name: "Oven", isLight: false, remainingLight: 200, lights: "On", buttonColor: "red", room: "Kitchen"}
-]

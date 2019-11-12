@@ -1,7 +1,0 @@
-[
-  {room: "0", title: "Hallway", lights: "On", buttonColor: "red"},
-  {room: "1", title: "Livingroom", lights: "On", buttonColor: "red"},
-  {room: "2", title: "Bathroom", lights: "On", buttonColor: "red"},
-  {room: "3", title: "Kitchen", lights: "On", buttonColor: "red"},
-  {room: "4", title: "Bedroom", lights: "On", buttonColor: "red"}
-]

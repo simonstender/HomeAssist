@@ -1,13 +1,11 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, TextInput, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
 import Slider from 'react-native-slider';
 
-import Overview from "../view/Overview"
-
-export default class Bedroom extends Component {
+export default class RoomScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam("title", "Bedroom"),
+      title: navigation.getParam("title", "Room"),
       headerLeft: <TouchableOpacity
       onPress={() => navigation.openDrawer()}>
       <Image
@@ -23,12 +21,17 @@ export default class Bedroom extends Component {
     this._isMounted = false;
     this.state = {
       isFetching: false,
-      data: require("../db/Bedroom.json")
+      numberOfDevices: 0,
+      data: []
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
+    this.fetchDevices();
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      this.updateDevices();
+    });
     this.props.navigation.setParams({
       headerRight: <TouchableOpacity
       onPress={() => this.addObjectAlert()}
@@ -41,8 +44,59 @@ export default class Bedroom extends Component {
     })
   }
 
+  fetchDevices(){
+    this.setState({isFetching: true})
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+      method: "GET",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+   },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      for (var i = 0; i < Object.keys(data).length; i++) {
+        if (this.props.navigation.getParam("title") == data[i].room) {
+          this.state.data[this.state.numberOfDevices++] = data[i]
+        }
+      }
+      this.setState({isFetching: false})
+    })
+  }
+
   componentWillUnmount(){
     this._isMounted = false;
+  }
+
+  updateDevices(){
+    this.setState({isFetching: true})
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+      method: "GET",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+   },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      for (var i = 0; i < Object.keys(data).length; i++) {
+        if (data[i]._key == this.props.navigation.getParam("title")) {
+          if (data[i].lights == "NEEDS FIXING") {
+            for (var i = 0; i < Object.keys(this.state.data).length; i++) {
+              this.state.data[i].lights = "Off";
+              this.state.data[i].buttonColor = "green";
+              this.updateDevice(this.state.data[i], "Off", "green")
+            }
+          } else if (data[i].lights == "NEEDS FIXING") {
+            this.state.data[i].lights = "On";
+            this.state.data[i].buttonColor = "red";
+            this.updateDevice(this.state.data[i], "On", "red")
+          }
+        }
+      }
+      this.setState({isFetching: false})
+    })
+
   }
 
   addObjectAlert(){
@@ -64,16 +118,14 @@ export default class Bedroom extends Component {
   }
 
   addObject(){
-    this.setState({isFetching: true});
-    this.state.data[Object.keys(this.state.data).length] = {id: "2", name: "Bedside lamp", isLight: true, remainingLight: 200, lights: "On", buttonColor: "red", room: "Bedroom"}
-    this.setState({isFetching: false});
+
   }
 
   renderItem = ({ item, index }) => {
     if (this.state.data[index].isLight == true) {
       return (
         <View style={styles.item}>
-          <Text style={styles.title}>{item.name} </Text>
+          <Text style={styles.title}>{item._key} </Text>
           <Button
             title={"Power " + this.state.data[index].lights}
             color={this.state.data[index].buttonColor}
@@ -91,7 +143,7 @@ export default class Bedroom extends Component {
     } else if (this.state.data[index].isLight == false) {
       return (
         <View style={styles.item}>
-          <Text style={styles.title}>{item.name} </Text>
+          <Text style={styles.title}>{item._key} </Text>
           <Button
             title={"Power " + this.state.data[index].lights}
             color={this.state.data[index].buttonColor}
@@ -103,15 +155,31 @@ export default class Bedroom extends Component {
 
   };
 
+  updateDevice(item, status, color){
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
+      method: "PATCH",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       lights: status,
+       buttonColor: color,
+     })
+    })
+  }
+
   onRefresh = (index) => {
     this.setState({isFetching: true})
     if (this.state.data[index].lights == "On") {
       this.state.data[index].lights = "Off";
       this.state.data[index].buttonColor = "green";
+      this.updateDevice(this.state.data[index], "Off", "green")
     }
     else if (this.state.data[index].lights == "Off") {
       this.state.data[index].lights = "On";
       this.state.data[index].buttonColor = "red";
+      this.updateDevice(this.state.data[index], "On", "red")
     }
     this.setState({isFetching: false})
   }
@@ -122,7 +190,7 @@ export default class Bedroom extends Component {
         <FlatList
         data={this.state.data}
         renderItem={this.renderItem}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item._key}
         onRefresh={() => this.onRefresh()}
         refreshing={this.state.isFetching}
         />
