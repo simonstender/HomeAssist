@@ -97,7 +97,6 @@ updateRooms(){
 				}
 			}
 		}
-    this.fetchRooms();
 		this.setState({isFetching: false})
 	})
 }
