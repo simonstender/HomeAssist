@@ -66,6 +66,7 @@ export default class RoomScreen extends Component {
 
   componentWillUnmount(){
     this._isMounted = false;
+    this.focusListener.remove();
   }
 
   updateDevices(){
@@ -81,13 +82,13 @@ export default class RoomScreen extends Component {
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
         if (data[i]._key == this.props.navigation.getParam("title")) {
-          if (data[i].lights == "NEEDS FIXING") {
+          if (data[i].allLights == "On") {
             for (var i = 0; i < Object.keys(this.state.data).length; i++) {
               this.state.data[i].lights = "Off";
               this.state.data[i].buttonColor = "green";
               this.updateDevice(this.state.data[i], "Off", "green")
             }
-          } else if (data[i].lights == "NEEDS FIXING") {
+          } else if (data[i].allLights == "Off") {
             this.state.data[i].lights = "On";
             this.state.data[i].buttonColor = "red";
             this.updateDevice(this.state.data[i], "On", "red")
@@ -95,6 +96,16 @@ export default class RoomScreen extends Component {
         }
       }
       this.setState({isFetching: false})
+      fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("title"), {
+        method: "PATCH",
+        headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         allLights: "Hold"
+       })
+      })
     })
 
   }

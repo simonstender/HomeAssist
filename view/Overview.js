@@ -4,12 +4,20 @@ import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, Toucha
 export default class Overview extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam("title"),
+      title: navigation.getParam("title", "Overview"),
       headerLeft: <TouchableOpacity
       onPress={() => navigation.openDrawer()}>
       <Image
       style={{ height: 44, width: 44, left: 10 }}
       source={require("../images/Hamburger_icon.svg.png")}
+      />
+      </TouchableOpacity>,
+      headerRight: <TouchableOpacity
+      onPress={() => navigation.navigate("AddRoomScreen")}
+      >
+      <Image
+      style={{ height: 44, width: 44, right: 10 }}
+      source={require("../images/greenPlus.png")}
       />
       </TouchableOpacity>
     };
@@ -90,9 +98,10 @@ export default class Overview extends Component {
 
   componentWillUnmount(){
     this._isMounted = false;
+    this.focusListener.remove();
   }
 
-  updateRoom(item, status, color){
+  updateRoom(item, status, color, allLights){
     fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + item._key, {
       method: "PATCH",
       headers: {
@@ -102,6 +111,7 @@ export default class Overview extends Component {
      body: JSON.stringify({
        lights: status,
        buttonColor: color,
+       allLights: allLights
      })
     })
   }
@@ -112,18 +122,24 @@ export default class Overview extends Component {
       if (this.state.data[index].lights == "On") {
         this.state.data[index].lights = "Off";
         this.state.data[index].buttonColor = "green";
-        this.updateRoom(this.state.data[index], "Off", "green")
+        this.updateRoom(this.state.data[index], "Off", "green", "On")
       }
       else if (this.state.data[index].lights == "Off") {
         this.state.data[index].lights = "On";
         this.state.data[index].buttonColor = "red";
-        this.updateRoom(this.state.data[index], "On", "red")
+        this.updateRoom(this.state.data[index], "On", "red", "Off")
       }
     }
     this.setState({isFetching: false})
   }
 
   renderItem = ({ item, index }) => {
+    var image;
+    if (this.state.data[index].buttonColor == "green") {
+      image = require("../images/greenLight.jpg");
+    } else if (this.state.data[index].buttonColor == "red") {
+      image = require("../images/redLight.jpg");
+    }
     return (
       <View style={styles.item}>
         <TouchableOpacity
@@ -170,8 +186,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 31,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     textShadowColor: "white",
     textShadowRadius: 8,
-  },
+  }
 });

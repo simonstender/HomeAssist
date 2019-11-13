@@ -7,11 +7,13 @@ import {createDrawerNavigator} from 'react-navigation-drawer';
 import Login from "./view/Login"
 import Overview from "./view/Overview"
 import RoomScreen from "./view/RoomScreen"
+import AddRoom from "./view/AddRoom"
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
   OverviewScreen: Overview,
-  RoomScreenScreen: RoomScreen
+  RoomScreenScreen: RoomScreen,
+  AddRoomScreen: AddRoom
 },
 {
   defaultNavigationOptions: {
