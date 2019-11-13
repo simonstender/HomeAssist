@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList, TextInput} from 'react-native';
+import {Platform, StyleSheet,} from 'react-native';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
 import Slider from 'react-native-slider';
 
 export default class AddRoom extends Component {
@@ -11,6 +12,7 @@ export default class AddRoom extends Component {
       headerRight: null
     };
   };
+
   constructor(props){
     super(props);
     this._isMounted = false;
@@ -29,15 +31,24 @@ export default class AddRoom extends Component {
   }
 
 
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Name of room</Text>
-        <TextInput />
-      </View>
-    );
-  }
-  }
+render() {
+	return (
+		<Container>
+				<Content padder>
+					<Form>
+						<Item floatingLabel>
+							<Label>Room name</Label>
+							<Input />
+						</Item>
+						<Button>
+							<Text>hej</Text>
+						</Button>
+					</Form>
+				</Content>
+		</Container>
+	);
+}
+}
 
   const styles = StyleSheet.create({
   container: {
