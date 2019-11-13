@@ -17,7 +17,6 @@ export default class Login extends Component {
 
   componentDidMount(){
     this._isMounted = true;
-    this.props.navigation.navigate("AddRoomScreen");
   }
 
   componentWillUnmount(){
