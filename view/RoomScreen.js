@@ -81,21 +81,27 @@ export default class RoomScreen extends Component {
     .then((response) => response.json())
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
+        if (this.props.navigation.getParam("title") == data[i].room) {
+          this.state.data[this.state.numberOfDevices++] = data[i]
+        }
+      }
+      for (var i = 0; i < Object.keys(data).length; i++) {
         if (data[i]._key == this.props.navigation.getParam("title")) {
           if (data[i].allLights == "On") {
-            for (var i = 0; i < Object.keys(this.state.data).length; i++) {
-              this.state.data[i].lights = "Off";
-              this.state.data[i].buttonColor = "green";
-              this.updateDevice(this.state.data[i], "Off", "green")
+            for (var j = 0; j < this.state.numberOfDevices; j++) {
+              this.state.data[j].lights = "Off";
+              this.state.data[j].buttonColor = "green";
+              this.updateDevice(this.state.data[j], "Off", "green")
             }
           } else if (data[i].allLights == "Off") {
-            this.state.data[i].lights = "On";
-            this.state.data[i].buttonColor = "red";
-            this.updateDevice(this.state.data[i], "On", "red")
+            for (var j = 0; j < this.state.numberOfDevices; j++) {
+              this.state.data[j].lights = "On";
+              this.state.data[j].buttonColor = "red";
+              this.updateDevice(this.state.data[j], "On", "red")
+            }
           }
         }
       }
-      this.setState({isFetching: false})
       fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("title"), {
         method: "PATCH",
         headers: {
@@ -106,8 +112,8 @@ export default class RoomScreen extends Component {
          allLights: "Hold"
        })
       })
+      this.setState({isFetching: false})
     })
-
   }
 
   addObjectAlert(){

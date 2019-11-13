@@ -56,14 +56,15 @@ fetchRooms(){
 	.then((response) => response.json())
 	.then((data) => {
 		for (var i = 0; i < Object.keys(data).length; i++) {
-			this.state.data[i] = data[i]
+			this.state.data[data[i].position] = data[i]
 		}
+    this.setState({isFetching: false})
 	})
-	.then(this.setState({isFetching: false}))
 }
 
 updateRooms(){
 	this.setState({isFetching: true})
+  this.fetchRooms();
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
@@ -96,6 +97,7 @@ updateRooms(){
 				}
 			}
 		}
+    this.fetchRooms();
 		this.setState({isFetching: false})
 	})
 }
@@ -145,7 +147,6 @@ renderItem = ({ item, index }) => {
 		else if (this.state.data[index].buttonColor == "red") {
 			image = require("../images/redLight.jpg");
 		}
-}
 return (
 	<Content padder>
 		<Card>
@@ -158,7 +159,7 @@ return (
 						</Body>
 				</Left>
 					<Right>
-						<Text>Temperatur: 47°C</Text>
+						<Text>Temperature: {item.temperature}°C</Text>
 					</Right>
 			</CardItem>
 				<CardItem style={{backgroundColor: '#EFEFF0'}}>
@@ -184,7 +185,7 @@ return (
 				</CardItem>
 		</Card>
 	</Content>
-  );
+);
 };
 
 render() {
