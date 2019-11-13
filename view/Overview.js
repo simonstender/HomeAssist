@@ -63,8 +63,8 @@ fetchRooms(){
 }
 
 updateRooms(){
-	this.setState({isFetching: true})
   this.fetchRooms();
+	this.setState({isFetching: true})
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {

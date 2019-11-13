@@ -81,20 +81,15 @@ export default class RoomScreen extends Component {
     .then((response) => response.json())
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
-        if (this.props.navigation.getParam("title") == data[i].room) {
-          this.state.data[this.state.numberOfDevices++] = data[i]
-        }
-      }
-      for (var i = 0; i < Object.keys(data).length; i++) {
         if (data[i]._key == this.props.navigation.getParam("title")) {
           if (data[i].allLights == "On") {
-            for (var j = 0; j < this.state.numberOfDevices; j++) {
+            for (var j = 0; j < Object.keys(this.state.data).length; j++) {
               this.state.data[j].lights = "Off";
               this.state.data[j].buttonColor = "green";
               this.updateDevice(this.state.data[j], "Off", "green")
             }
           } else if (data[i].allLights == "Off") {
-            for (var j = 0; j < this.state.numberOfDevices; j++) {
+            for (var j = 0; j < Object.keys(this.state.data).length; j++) {
               this.state.data[j].lights = "On";
               this.state.data[j].buttonColor = "red";
               this.updateDevice(this.state.data[j], "On", "red")
