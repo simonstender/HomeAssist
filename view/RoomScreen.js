@@ -57,7 +57,7 @@ export default class RoomScreen extends Component {
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
         if (this.props.navigation.getParam("title") == data[i].room) {
-          this.state.data[this.state.numberOfDevices++] = data[i]
+          this.state.data[data[i].position] = data[i]
         }
       }
       this.setState({isFetching: false})
