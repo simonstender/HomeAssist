@@ -18,6 +18,8 @@ export default class AddRoom extends Component {
     this._isMounted = false;
     this.state = {
       name: "",
+      pos: 0,
+      temp: (Math.floor(Math.random() * 10)+20).toString(),
     }
   }
 
@@ -30,6 +32,45 @@ export default class AddRoom extends Component {
     this._isMounted = false;
   }
 
+addRoom(){
+  if (this.state.name != "") {
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+  		method: "GET",
+  		headers: {
+  			'Accept': 'application/json',
+  			'Content-Type': 'application/json',
+  		},
+  })
+  	.then((response) => response.json())
+  	.then((data) => {
+      pos = Object.keys(data).length;
+      fetch("http://192.168.0.181:8529/_db/HomeAssist/CRUD_r/room", {
+        method: "POST",
+        headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         _key: this.state.name,
+         lights: "On",
+         buttonColor: "red",
+         allLights: "Hold",
+         devices: 0,
+         temperature: this.state.temp,
+         position: pos
+       })
+      })
+      .then((data) => {
+        if (data.status == "201") {
+          this.props.navigation.navigate("OverviewScreen")
+        } else
+        alert("Something went wrong when creating your room");
+      })
+  	})
+  } else if (this.state.name == "") {
+    alert("You have not entered a name!");
+  }
+}
 
 render() {
 	return (
@@ -38,10 +79,14 @@ render() {
 					<Form>
 						<Item floatingLabel>
 							<Label>Room name</Label>
-							<Input />
+							<Input
+              onChangeText={(name) => this.setState({ name })}
+              />
 						</Item>
-						<Button>
-							<Text>hej</Text>
+						<Button
+            onPress={() => this.addRoom()}
+            >
+							<Text>Add Room</Text>
 						</Button>
 					</Form>
 				</Content>
