@@ -1,18 +1,15 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Button, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
+import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right, View, Form, Item, Input, Label } from 'native-base';
 import Slider from 'react-native-slider';
 
 export default class RoomScreen extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: navigation.getParam("title", "Room"),
-      headerLeft: <TouchableOpacity
-      onPress={() => navigation.openDrawer()}>
-      <Image
-      style={{ height: 44, width: 44, left: 10 }}
-      source={require("../images/Hamburger_icon.svg.png")}
-      />
-      </TouchableOpacity>,
+      title: navigation.getParam("name"),
+      headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
+  			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
+  			</TouchableOpacity>,
       headerRight: navigation.state.params && navigation.state.params.headerRight
     };
   };
@@ -22,30 +19,28 @@ export default class RoomScreen extends Component {
     this.state = {
       isFetching: false,
       numberOfDevices: 0,
-      data: []
+      tempData: [],
+      allData: [],
+      data: [],
+      topPos: 0,
+      roomName: this.props.navigation.getParam("name")
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
     this.fetchDevices();
+    this.props.navigation.setParams({
+      headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos})}>
+      <Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
+      </TouchableOpacity>});
     this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.updateDevices();
     });
-    this.props.navigation.setParams({
-      headerRight: <TouchableOpacity
-      onPress={() => this.addObjectAlert()}
-      >
-      <Image
-      style={{ height: 44, width: 44, right: 10 }}
-      source={require("../images/greenPlus.png")}
-      />
-      </TouchableOpacity>
-    })
   }
 
   fetchDevices(){
-    this.setState({isFetching: true})
+    this.setState({isFetching: true, data: [], tempData: [], allData: [], numberOfDevices: 0})
     fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
       method: "GET",
       headers: {
@@ -56,12 +51,45 @@ export default class RoomScreen extends Component {
     .then((response) => response.json())
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
-        if (this.props.navigation.getParam("title") == data[i].room) {
-          this.state.data[data[i].position] = data[i]
+        this.state.allData[i] = data[i];
+        if (this.state.roomName == data[i].room) {
+          this.state.tempData[this.state.numberOfDevices++] = data[i]
         }
-      }
+  		}
+  		this.insertion_Sort(this.state.tempData);
+      this.insertion_Sort(this.state.allData);
+  		for (var i = 0; i < Object.keys(this.state.tempData).length; i++) {
+  			this.state.data[i] = this.state.tempData[i]
+  		}
+  		if (Object.keys(data).length >= 1) {
+  			this.state.topPos = this.state.allData[Object.keys(data).length - 1]._key
+
+  		}
       this.setState({isFetching: false})
     })
+  }
+
+  insertion_Sort(data)
+  {
+    for (var i = 1; i < data.length; i++)
+    {
+      if (data[i]._key < data[0]._key)
+      {
+        data.unshift(data.splice(i,1)[0]);
+      }
+      else if (data[i]._key > data[i-1]._key)
+      {
+        continue;
+      }
+      else {
+        for (var j = 1; j < i; j++) {
+          if (data[i]._key > data[j-1]._key && data[i]._key < data[j]._key)
+          {
+            data.splice(j,0,data.splice(i,1)[0]);
+          }
+        }
+      }
+    }
   }
 
   componentWillUnmount(){
@@ -70,6 +98,7 @@ export default class RoomScreen extends Component {
   }
 
   updateDevices(){
+    this.fetchDevices();
     this.setState({isFetching: true})
     fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
       method: "GET",
@@ -81,7 +110,7 @@ export default class RoomScreen extends Component {
     .then((response) => response.json())
     .then((data) => {
       for (var i = 0; i < Object.keys(data).length; i++) {
-        if (data[i]._key == this.props.navigation.getParam("title")) {
+        if (data[i].name == this.props.navigation.getParam("name")) {
           if (data[i].allLights == "On") {
             for (var j = 0; j < Object.keys(this.state.data).length; j++) {
               this.state.data[j].lights = "Off";
@@ -97,7 +126,7 @@ export default class RoomScreen extends Component {
           }
         }
       }
-      fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("title"), {
+      fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("name"), {
         method: "PATCH",
         headers: {
        'Accept': 'application/json',
@@ -111,33 +140,11 @@ export default class RoomScreen extends Component {
     })
   }
 
-  addObjectAlert(){
-    Alert.alert(
-      'New device detected',
-      'Would you like to add it?',
-      [
-        {
-          text: 'Yes',
-          onPress: () => this.addObject(),
-          style: 'cancel',
-        },
-        {
-          text: "No",
-          style: 'cancel',
-        }
-      ]
-    )
-  }
-
-  addObject(){
-
-  }
-
   renderItem = ({ item, index }) => {
     if (this.state.data[index].isLight == true) {
       return (
         <View style={styles.item}>
-          <Text style={styles.title}>{item._key} </Text>
+          <Text style={styles.title}>{item.name} </Text>
           <Button
             title={"Power " + this.state.data[index].lights}
             color={this.state.data[index].buttonColor}
@@ -155,7 +162,7 @@ export default class RoomScreen extends Component {
     } else if (this.state.data[index].isLight == false) {
       return (
         <View style={styles.item}>
-          <Text style={styles.title}>{item._key} </Text>
+          <Text style={styles.title}>{item.name} </Text>
           <Button
             title={"Power " + this.state.data[index].lights}
             color={this.state.data[index].buttonColor}
@@ -168,7 +175,7 @@ export default class RoomScreen extends Component {
   };
 
   updateDevice(item, status, color){
-    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item.name, {
       method: "PATCH",
       headers: {
      'Accept': 'application/json',

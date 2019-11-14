@@ -8,25 +8,27 @@ import Login from "./view/Login"
 import Overview from "./view/Overview"
 import RoomScreen from "./view/RoomScreen"
 import AddRoom from "./view/AddRoom"
+import AddDevice from "./view/AddDevice"
 
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
   OverviewScreen: Overview,
   RoomScreenScreen: RoomScreen,
-  AddRoomScreen: AddRoom
+  AddRoomScreen: AddRoom,
+  AddDeviceScreen: AddDevice
 },
 {
   defaultNavigationOptions: {
     headerStyle: {
-      backgroundColor: '#696969',
+      backgroundColor: '#EFEFF0',
       height: 80,
       borderBottomWidth: 0,
     },
     headerTitleStyle: {
       fontSize: 32,
       paddingLeft: 30 },
-      headerTintColor: '#FFFFFF',
+      headerTintColor: 'black',
       drawerLockMode: "locked-closed",
       gesturesEnabled: false,
     },
@@ -49,7 +51,7 @@ const AppDrawerNavigator = createDrawerNavigator({
   }
 );
 
-const App = createAppContainer(AppDrawerNavigator);
+const App = createAppContainer(AppStackNavigator);
 
 export default App;
 
