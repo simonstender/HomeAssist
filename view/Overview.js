@@ -15,13 +15,8 @@ export default class Overview extends Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
 			title: navigation.getParam("title", "Overview"),
-			headerLeft: <TouchableOpacity
-			onPress={() => navigation.openDrawer()}>
-			<Image style={{ height: 44, width: 44, left: 10 }} source={require("../images/Hamburger_icon.svg.png")}/>
-			</TouchableOpacity>,
-			headerRight: <TouchableOpacity onPress={() => navigation.navigate("AddRoomScreen")}>
-			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
-			</TouchableOpacity>
+			headerLeft: null,
+			headerRight: navigation.state.params && navigation.state.params.headerRight
 		};
 };
 
@@ -32,20 +27,26 @@ constructor(props){
 	this.state = {
 		isFetching: false,
 		numberOfDevices: [],
-		data: []
+		tempData: [],
+		data: [],
+		topPos: 0,
 	}
 }
 
 componentDidMount(){
 	this._isMounted = true;
 	this.fetchRooms();
+	this.props.navigation.setParams({
+		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
+			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
+			</TouchableOpacity>})
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 		this.updateRooms();
 	});
 }
 
 fetchRooms(){
-	this.setState({isFetching: true})
+	this.setState({isFetching: true, data: []})
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
 		method: "GET",
 		headers: {
@@ -56,10 +57,40 @@ fetchRooms(){
 	.then((response) => response.json())
 	.then((data) => {
 		for (var i = 0; i < Object.keys(data).length; i++) {
-			this.state.data[data[i].position] = data[i]
+			this.state.tempData[i] = data[i]
 		}
-    this.setState({isFetching: false})
+		this.insertion_Sort(this.state.tempData);
+		for (var i = 0; i < Object.keys(data).length; i++) {
+			this.state.data[i] = this.state.tempData[i]
+		}
+		if (Object.keys(data).length >= 1) {
+			this.state.topPos = this.state.tempData[Object.keys(data).length - 1]._key
+		}
+    this.setState({isFetching: false, tempData: []})
 	})
+}
+
+insertion_Sort(data)
+{
+  for (var i = 1; i < data.length; i++)
+  {
+    if (data[i]._key < data[0]._key)
+    {
+      data.unshift(data.splice(i,1)[0]);
+    }
+    else if (data[i]._key > data[i-1]._key)
+    {
+      continue;
+    }
+    else {
+      for (var j = 1; j < i; j++) {
+        if (data[i]._key > data[j-1]._key && data[i]._key < data[j]._key)
+        {
+          data.splice(j,0,data.splice(i,1)[0]);
+        }
+      }
+    }
+  }
 }
 
 updateRooms(){
@@ -150,11 +181,11 @@ return (
 	<Content padder>
 		<Card>
 			<CardItem button
-				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{title: item._key})}>
+				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name})}>
 				<Left>
 					<Thumbnail source={require("../images/home.png")} />
 						<Body>
-							<Text>{item._key}</Text>
+							<Text>{item.name}</Text>
 						</Body>
 				</Left>
 					<Right>
@@ -169,12 +200,17 @@ return (
 						<Body>
 							<Right>
 								<Root>
-									<Button transparent iconRight onPress={() =>ActionSheet.show({
+									<Button transparent iconRight onPress={() => ActionSheet.show({
 										options: BUTTONS,
 										cancelButtonIndex: CANCEL_INDEX,
 										destructiveButtonIndex: DESTRUCTIVE_INDEX,
 										title: "Room Settings"},
-										buttonIndex => {this.setState({ clicked: BUTTONS[buttonIndex] });})}>
+										buttonIndex => {
+											if (buttonIndex == 1) {
+												this.deleteRoom(item._key);
+											}
+										}
+										)}>
 										<Icon name='cog' />
 										<Text>Settings</Text>
 									</Button>
@@ -186,6 +222,23 @@ return (
 	</Content>
 );
 };
+
+deleteRoom(key){
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + key, {
+		method: "DELETE",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		}
+	})
+	.then((data) => {
+		if (data.status == "204") {
+			this.fetchRooms();
+		} else {
+			alert("Something went wrong when deleting the room");
+		}
+	})
+}
 
 render() {
 	return (

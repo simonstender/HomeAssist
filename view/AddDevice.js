@@ -6,7 +6,7 @@ import Slider from 'react-native-slider';
 export default class AddRoom extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
-      title: "Add Room",
+      title: "Add Device",
       headerLayoutPreset: "center",
       headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
   			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
@@ -33,40 +33,30 @@ export default class AddRoom extends Component {
     this._isMounted = false;
   }
 
-addRoom(){
+addDevice(){
   if (this.state.name != "") {
-    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
-  		method: "GET",
-  		headers: {
-  			'Accept': 'application/json',
-  			'Content-Type': 'application/json',
-  		},
-  })
-  	.then((response) => response.json())
-  	.then((data) => {
-      fetch("http://192.168.0.181:8529/_db/HomeAssist/CRUD_r/room", {
-        method: "POST",
-        headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({
-         _key: (this.state.pos).toString(),
-         name: this.state.name,
-         lights: "On",
-         buttonColor: "red",
-         allLights: "Hold",
-         devices: 0,
-         temperature: (Math.floor(Math.random() * 10)+20).toString()
-       })
-      })
-      .then((data) => {
-        if (data.status == "201") {
-          this.props.navigation.navigate("OverviewScreen")
-        } else
-        alert(JSON.stringify(data));
-      })
-  	})
+    fetch("http://192.168.0.181:8529/_db/HomeAssist/CRUD_d/device", {
+      method: "POST",
+      headers: {
+     'Accept': 'application/json',
+     'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       _key: (this.state.pos).toString(),
+       name: this.state.name,
+       isLight: true,
+       remainingLight: 0,
+       lights: "On",
+       buttonColor: "red",
+       room: this.props.navigation.getParam("name")
+     })
+    })
+    .then((data) => {
+      if (data.status == "201") {
+        this.props.navigation.navigate("OverviewScreen")
+      } else
+      alert("Something went wrong when creating your room");
+    })
   } else if (this.state.name == "") {
     alert("You have not entered a name!");
   }
@@ -78,18 +68,18 @@ render() {
 				<Content padder>
 					<Form>
 						<Item floatingLabel>
-							<Label>Room name</Label>
+							<Label>Device name</Label>
 							<Input
               onChangeText={(name) => this.setState({ name })}
               />
 						</Item>
 						<Button
-            onPress={() => this.addRoom()}
+            onPress={() => this.addDevice()}
             >
 							<Text>Add Room</Text>
 						</Button>
             <Button
-            onPress={() => this.props.navigation.navigate("OverviewScreen")}
+            onPress={() => this.props.navigation.navigate("RoomScreenScreen")}
             >
 							<Text>Cancel</Text>
 						</Button>
