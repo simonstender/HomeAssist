@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList} from 'react-native';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right, View, Form, Item, Input, Label } from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right, View, Form, Item, Input, Label, Root } from 'native-base';
 import Slider from 'react-native-slider';
-import {Root} from 'native-base'
 
 export default class RoomScreen extends Component {
 	static navigationOptions = ({ navigation }) => {
@@ -122,7 +121,7 @@ updateDevices(){
 				}
 			}
 		}
-		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("name"), {
+		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 			method: "PATCH",
 			headers: {
 				'Accept': 'application/json',
@@ -181,7 +180,7 @@ renderItem = ({ item, index }) => {
 													Alert.alert("Light bulb","17 Day, 1 Hour, 30 mins Estimated time remaining.")
 												}
 												if (buttonIndex == 2) {
-													//this.deleteRoom(item._key, item.name);
+													this.deleteDevice(item._key);
 												}
 											}
 											)}>
@@ -233,7 +232,7 @@ renderItem = ({ item, index }) => {
 												title: "Device Settings"},
 												buttonIndex => {
 													if (buttonIndex == 1) {
-														//this.deleteRoom(item._key, item.name);
+														this.deleteDevice(item._key);
 													}
 												}
 												)}>
@@ -250,7 +249,7 @@ renderItem = ({ item, index }) => {
 };
 
 updateDevice(item, status, color){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item.name, {
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
 		method: "PATCH",
 		headers: {
 			'Accept': 'application/json',
@@ -264,17 +263,36 @@ updateDevice(item, status, color){
 }
 
 onRefresh = (index) => {this.setState({isFetching: true})
-	if (this.state.data[index].lights == "On") {
-		this.state.data[index].lights = "Off";
-		this.state.data[index].buttonColor = "green";
-		this.updateDevice(this.state.data[index], "Off", "green")
-	}
-	else if (this.state.data[index].lights == "Off") {
-		this.state.data[index].lights = "On";
-		this.state.data[index].buttonColor = "red";
-		this.updateDevice(this.state.data[index], "On", "red")
+	if (typeof index !== "undefined") {
+		if (this.state.data[index].lights == "On") {
+			this.state.data[index].lights = "Off";
+			this.state.data[index].buttonColor = "green";
+			this.updateDevice(this.state.data[index], "Off", "green")
+		}
+		else if (this.state.data[index].lights == "Off") {
+			this.state.data[index].lights = "On";
+			this.state.data[index].buttonColor = "red";
+			this.updateDevice(this.state.data[index], "On", "red")
+		}
 	}
 	this.setState({isFetching: false})
+}
+
+deleteDevice(key){
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + key, {
+		method: "DELETE",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		}
+	})
+	.then((data) => {
+		if (data.status == "204") {
+			this.fetchDevices();
+		} else {
+			alert("Something went wrong when deleting devices in the room");
+		}
+	})
 }
 
 render() {
