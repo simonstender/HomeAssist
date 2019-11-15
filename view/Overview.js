@@ -4,7 +4,7 @@ import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, F
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View } from 'native-base';
 
 var BUTTONS = [
-	{ text: "Edit Name", icon: "edit", iconColor: "#2c8ef4" },
+	{ text: "Edit Name", icon: "create", iconColor: "#2c8ef4" },
 	{ text: "Delete", icon: "trash", iconColor: "#fa213b" },
 	{ text: "Close", icon: "close", iconColor: "#25de5b" }
 ];
@@ -111,14 +111,14 @@ updateRooms(){
 		for (var i = 0; i < Object.keys(data).length; i++) {
 			if (data[i].lights == 'Off') {
 				for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-					if (this.state.data[j]._key == data[i].room) {
+					if (this.state.data[j].name == data[i].room) {
 						this.state.data[j].lights = "Off";
 						this.state.data[j].buttonColor = 'green';
 					}
 				}
 			} else if (data[i].lights == "On") {
 				for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-					if (this.state.data[j]._key == data[i].room) {
+					if (this.state.data[j].name == data[i].room) {
 						this.state.numberOfDevices[j]++;
 						if (this.state.numberOfDevices[j] == this.state.data[j].devices) {
 							this.state.data[j].lights = "On";
@@ -181,7 +181,7 @@ return (
 	<Content padder>
 		<Card>
 			<CardItem button
-				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name})}>
+				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name, key: item._key})}>
 				<Left>
 					<Thumbnail source={require("../images/home.png")} />
 						<Body>
