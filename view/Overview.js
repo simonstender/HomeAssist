@@ -207,7 +207,7 @@ return (
 										title: "Room Settings"},
 										buttonIndex => {
 											if (buttonIndex == 1) {
-												this.deleteRoom(item._key);
+												this.deleteRoom(item._key, item.name);
 											}
 										}
 										)}>
@@ -223,7 +223,34 @@ return (
 );
 };
 
-deleteRoom(key){
+deleteRoom(key, name){
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+		method: "GET",
+		headers: {
+		'Accept': 'application/json',
+		'Content-Type': 'application/json',
+		},
+	})
+	.then((response) => response.json())
+	.then((data) => {
+		for (var i = 0; i < Object.keys(data).length; i++) {
+			if (data[i].room == name) {
+				fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + data[i]._key, {
+					method: "DELETE",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					}
+				})
+				.then((data) => {
+					if (data.status != "204") {
+						alert("Something went wrong when deleting devices in the room");
+					}
+				})
+			}
+		}
+	})
+	.then(
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + key, {
 		method: "DELETE",
 		headers: {
@@ -237,7 +264,7 @@ deleteRoom(key){
 		} else {
 			alert("Something went wrong when deleting the room");
 		}
-	})
+	}))
 }
 
 render() {

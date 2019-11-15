@@ -53,7 +53,7 @@ addDevice(){
     })
     .then((data) => {
       if (data.status == "201") {
-        this.props.navigation.navigate("OverviewScreen")
+        this.props.navigation.navigate("RoomScreenScreen")
       } else
       alert("Something went wrong when creating your room");
     })
