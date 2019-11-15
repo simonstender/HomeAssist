@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, Alert} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
 import Slider from 'react-native-slider';
 
@@ -34,42 +34,44 @@ export default class AddRoom extends Component {
   }
 
 addRoom(){
-  if (this.state.name != "") {
-    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
-  		method: "GET",
-  		headers: {
-  			'Accept': 'application/json',
-  			'Content-Type': 'application/json',
-  		},
-  })
-  	.then((response) => response.json())
-  	.then((data) => {
-      fetch("http://192.168.0.181:8529/_db/HomeAssist/CRUD_r/room", {
-        method: "POST",
-        headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({
-         _key: (this.state.pos).toString(),
-         name: this.state.name,
-         lights: "On",
-         buttonColor: "red",
-         allLights: "Hold",
-         devices: 0,
-         temperature: (Math.floor(Math.random() * 10)+20).toString()
-       })
-      })
-      .then((data) => {
-        if (data.status == "201") {
-          this.props.navigation.navigate("OverviewScreen")
-        } else
-        alert(JSON.stringify(data));
-      })
-  	})
-  } else if (this.state.name == "") {
-    alert("You have not entered a name!");
-  }
+	if (this.state.name != "") {
+		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+				method: "POST",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					_key: (this.state.pos).toString(),
+					name: this.state.name,
+					lights: "On",
+					buttonColor: "red",
+					allLights: "Hold",
+					devices: 0,
+					temperature: (Math.floor(Math.random() * 10)+20).toString()
+				})
+			})
+			.then((data) => {
+				if (data.status == "201") {
+					this.props.navigation.navigate("OverviewScreen")
+				}
+				else
+				alert(JSON.stringify(data));
+			})
+		})
+	}
+	else if (this.state.name == "") {
+		alert("You have not entered a name!");
+	}
 }
 
 render() {
