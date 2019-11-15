@@ -35,7 +35,7 @@ export default class AddRoom extends Component {
 
 addDevice(){
   if (this.state.name != "") {
-    fetch("http://192.168.0.181:8529/_db/HomeAssist/CRUD_d/device", {
+    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
       method: "POST",
       headers: {
      'Accept': 'application/json',
@@ -69,18 +69,12 @@ render() {
 					<Form>
 						<Item floatingLabel>
 							<Label>Device name</Label>
-							<Input
-              onChangeText={(name) => this.setState({ name })}
-              />
+							<Input onChangeText={(name) => this.setState({ name })}/>
 						</Item>
-						<Button
-            onPress={() => this.addDevice()}
-            >
+						<Button onPress={() => this.addDevice()}>
 							<Text>Add Room</Text>
 						</Button>
-            <Button
-            onPress={() => this.props.navigation.navigate("RoomScreenScreen")}
-            >
+						<Button onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
 							<Text>Cancel</Text>
 						</Button>
 					</Form>
