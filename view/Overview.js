@@ -4,7 +4,7 @@ import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, F
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View } from 'native-base';
 
 var BUTTONS = [
-	{ text: "Edit Name", icon: "paper", iconColor: "#2c8ef4" },
+	{ text: "Edit Name", icon: "edit", iconColor: "#2c8ef4" },
 	{ text: "Delete", icon: "trash", iconColor: "#fa213b" },
 	{ text: "Close", icon: "close", iconColor: "#25de5b" }
 ];
