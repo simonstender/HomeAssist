@@ -53,9 +53,35 @@ addDevice(){
     })
     .then((data) => {
       if (data.status == "201") {
-        this.props.navigation.navigate("RoomScreenScreen")
+        fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+        		method: "PATCH",
+        		headers: {
+        			'Accept': 'application/json',
+        			'Content-Type': 'application/json',
+        		},
+        		body: JSON.stringify({
+        			devices: data.devices + 1
+        		})
+        	})
+          .then((data) => {
+            if (data.status == "200") {
+              this.props.navigation.navigate("RoomScreenScreen")
+            } else {
+              alert("Something went wrong when creating your device");
+            }
+          })
+        })
       } else
-      alert("Something went wrong when creating your room");
+      alert("Something went wrong when creating your device");
     })
   } else if (this.state.name == "") {
     alert("You have not entered a name!");
@@ -72,7 +98,7 @@ render() {
 							<Input onChangeText={(name) => this.setState({ name })}/>
 						</Item>
 						<Button onPress={() => this.addDevice()}>
-							<Text>Add Room</Text>
+							<Text>Add device</Text>
 						</Button>
 						<Button onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
 							<Text>Cancel</Text>
