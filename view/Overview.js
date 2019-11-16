@@ -170,20 +170,13 @@ onRefresh = (index) => {
 }
 
 renderItem = ({ item, index }) => {
-	var image;
-		if (this.state.data[index].buttonColor == "green") {
-			image = require("../images/greenLight.jpg");
-		}
-		else if (this.state.data[index].buttonColor == "red") {
-			image = require("../images/redLight.jpg");
-		}
 return (
 	<Content padder>
 		<Card>
 			<CardItem button
 				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name, key: item._key})}>
 				<Left>
-					<Thumbnail source={require("../images/home.png")} />
+					<Thumbnail source={require("../images/home.jpg")} />
 						<Body>
 							<Text>{item.name}</Text>
 						</Body>

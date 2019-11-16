@@ -31,7 +31,7 @@ componentDidMount(){
 	this._isMounted = true;
 	this.fetchDevices();
 	this.props.navigation.setParams({
-		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos})}>
+		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos, roomKey: this.props.navigation.getParam("key")})}>
 		<Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
 		</TouchableOpacity>});
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
@@ -288,7 +288,33 @@ deleteDevice(key){
 	})
 	.then((data) => {
 		if (data.status == "204") {
-			this.fetchDevices();
+			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				},
+		})
+			.then((response) => response.json())
+			.then((data) => {
+				fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+					method: "PATCH",
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						devices: data.devices - 1
+					})
+				})
+				.then((data) => {
+					if (data.status == "200") {
+						this.fetchDevices();
+					} else {
+						alert("Something went wrong when deleting your device in the room");
+					}
+				})
+			})
 		} else {
 			alert("Something went wrong when deleting devices in the room");
 		}
