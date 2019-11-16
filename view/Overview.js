@@ -41,7 +41,7 @@ componentDidMount(){
 			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
 			</TouchableOpacity>})
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
-		this.updateRooms();
+	  this.fetchRooms();
 	});
 }
 
@@ -66,8 +66,8 @@ fetchRooms(){
 		if (Object.keys(data).length >= 1) {
 			this.state.topPos = this.state.tempData[Object.keys(data).length - 1]._key
 		}
-    this.setState({isFetching: false, tempData: []})
 	})
+	.then(() => {this.updateRooms();})
 }
 
 insertion_Sort(data)
@@ -94,8 +94,6 @@ insertion_Sort(data)
 }
 
 updateRooms(){
-  this.fetchRooms();
-	this.setState({isFetching: true})
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
@@ -109,27 +107,29 @@ updateRooms(){
 			this.state.numberOfDevices[i] = 0;
 		}
 		for (var i = 0; i < Object.keys(data).length; i++) {
-			if (data[i].lights == 'Off') {
+			if (data[i].lights === 'Off') {
 				for (var j = 0; j < Object.keys(this.state.data).length; j++) {
 					if (this.state.data[j].name == data[i].room) {
 						this.state.data[j].lights = "Off";
 						this.state.data[j].buttonColor = 'green';
+						this.updateRoom(this.state.data[j], "Off", "green", "Hold")
 					}
 				}
-			} else if (data[i].lights == "On") {
+			} else if (data[i].lights === "On") {
 				for (var j = 0; j < Object.keys(this.state.data).length; j++) {
 					if (this.state.data[j].name == data[i].room) {
 						this.state.numberOfDevices[j]++;
-						if (this.state.numberOfDevices[j] == this.state.data[j].devices) {
-							this.state.data[j].lights = "On";
-							this.state.data[j].buttonColor = "red";
-						}
+					}
+					if (this.state.data[j].devices == this.state.numberOfDevices[j] ) {
+						this.state.data[j].lights = "On";
+						this.state.data[j].buttonColor = "red";
+						this.updateRoom(this.state.data[j], "On", "red", "Hold")
 					}
 				}
 			}
 		}
-		this.setState({isFetching: false})
 	})
+	.then(() => {this.setState({isFetching: false, tempData: []})})
 }
 
 componentWillUnmount(){
@@ -149,6 +149,11 @@ updateRoom(item, status, color, allLights){
 			buttonColor: color,
 			allLights: allLights
 		})
+	})
+	.then((data) => {
+		if (data.status != "200") {
+			this.updateRooms();
+		}
 	})
 }
 

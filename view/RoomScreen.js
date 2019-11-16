@@ -35,7 +35,7 @@ componentDidMount(){
 		<Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
 		</TouchableOpacity>});
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
-		this.updateDevices();
+		this.fetchDevices();
 		});
 }
 
@@ -64,8 +64,8 @@ fetchDevices(){
 		if (Object.keys(data).length >= 1) {
 			this.state.topPos = this.state.allData[Object.keys(data).length - 1]._key
 		}
-		this.setState({isFetching: false})
 	})
+	.then(() => {this.updateDevices();})
 }
 
 insertion_Sort(data){
@@ -92,8 +92,6 @@ componentWillUnmount(){
 }
 
 updateDevices(){
-	this.fetchDevices();
-	this.setState({isFetching: true})
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
 		method: "GET",
 		headers: {
@@ -131,8 +129,8 @@ updateDevices(){
 				allLights: "Hold"
 			})
 		})
-		this.setState({isFetching: false})
 	})
+	.then(() => {this.setState({isFetching: false})})
 }
 
 renderItem = ({ item, index }) => {
