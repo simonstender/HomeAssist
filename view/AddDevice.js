@@ -1,37 +1,43 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox } from 'native-base';
 import Slider from 'react-native-slider';
+import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
+
+var radio_props = [
+	{label: 'Lamp Connected', value: 1 },
+	{label: 'No Lamp', value: 0 }
+];
 
 export default class AddRoom extends Component {
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: "Add Device",
-      headerLayoutPreset: "center",
-      headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
-  			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
-  			</TouchableOpacity>,
-      headerRight: null
-    };
-  };
+static navigationOptions = ({ navigation }) => {
+	return {
+		title: "Add Device",
+		headerLayoutPreset: "center",
+			headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
+			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
+			</TouchableOpacity>,
+			headerRight: null
+	};
+};
 
-  constructor(props){
-    super(props);
-    this._isMounted = false;
-    this.state = {
-      name: "",
-      pos: parseInt(this.props.navigation.getParam("pos")) + 1
-    }
-  }
+constructor(props){
+	super(props);
+	this._isMounted = false;
+	this.state = {
+		name: "",
+		pos: parseInt(this.props.navigation.getParam("pos")) + 1,
+		itemSelected: 'false'
+	}
+}
 
-  componentDidMount(){
-    this._isMounted = true;
-  }
+componentDidMount(){
+	this._isMounted = true;
+}
 
-
-  componentWillUnmount(){
-    this._isMounted = false;
-  }
+componentWillUnmount(){
+	this._isMounted = false;
+}
 
 addDevice(){
   if (this.state.name != "") {
@@ -97,11 +103,28 @@ render() {
 							<Label>Device name</Label>
 							<Input onChangeText={(name) => this.setState({ name })}/>
 						</Item>
-						<Button onPress={() => this.addDevice()}>
-							<Text>Add device</Text>
+						<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
+						<List>
+							<ListItem>
+								<CheckBox onPress={() => this.setState({ itemSelected: 'true' })} checked={this.state.itemSelected == 'true'}/>
+								<Text style={{left: 10 }}>Lamp</Text>
+							</ListItem>
+							<ListItem>
+								<CheckBox onPress={() => this.setState({ itemSelected: 'false' })} checked={this.state.itemSelected == 'false'}/>
+								<Text style={{left: 10 }}>Other</Text>
+							</ListItem>
+						</List>
+						<Button style={[(this.state.itemSelected == true) ? styles.buttonEnabled : styles.buttonDisabled]} onPress={() => this.addDevice()}>
+							<Icon name="add"/>
+							<Text style={{left: -195 }}>Catagory Options</Text>
 						</Button>
-						<Button onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
-							<Text>Cancel</Text>
+						<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
+							<Icon name="add"/>
+							<Text style={{left: -255 }}>Add Room</Text>
+						</Button>
+						<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+							<Icon name="close"/>
+							<Text style={{left: -273 }}>Cancel</Text>
 						</Button>
 					</Form>
 				</Content>
@@ -110,28 +133,49 @@ render() {
 }
 }
 
-  const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  text: {
-    textAlign: "center"
-  },
-  item: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    backgroundColor: '#696969',
-    padding: 8,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    textShadowColor: "white",
-    textShadowRadius: 8,
-    alignSelf: "center"
-  },
-  });
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "white"
+	},
+	text: {
+		textAlign: "center"
+	},
+	item: {
+		flexDirection: "column",
+		justifyContent: "space-between",
+		backgroundColor: '#696969',
+		padding: 8,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
+	title: {
+		fontSize: 24,
+		textShadowColor: "white",
+		textShadowRadius: 8,
+		alignSelf: "center"
+	},
+	buttonDisabled: {
+		fontSize: 24,
+		textShadowColor: "white",
+		textShadowRadius: 8,
+		alignSelf: "center"
+	},
+	buttonEnabled: {
+		fontSize: 24,
+		textShadowColor: "white",
+		textShadowRadius: 8,
+		alignSelf: "center"
+	},
+});
+
+//						<RadioForm radio_props={radio_props} initial={4} onPress={(value) => {
+//							if (this.state.value)) {
+//								this.setState({value:value})
+//							}
+//							else {
+//								this.setState({value:value})
+//							}
+//						}}/>
