@@ -2,12 +2,6 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox } from 'native-base';
 import Slider from 'react-native-slider';
-import RadioForm, {RadioButton, RadioButtonInput, RadioButtonLabel} from 'react-native-simple-radio-button';
-
-var radio_props = [
-	{label: 'Lamp Connected', value: 1 },
-	{label: 'No Lamp', value: 0 }
-];
 
 export default class AddRoom extends Component {
 static navigationOptions = ({ navigation }) => {
@@ -170,12 +164,3 @@ const styles = StyleSheet.create({
 		alignSelf: "center"
 	},
 });
-
-//						<RadioForm radio_props={radio_props} initial={4} onPress={(value) => {
-//							if (this.state.value)) {
-//								this.setState({value:value})
-//							}
-//							else {
-//								this.setState({value:value})
-//							}
-//						}}/>
