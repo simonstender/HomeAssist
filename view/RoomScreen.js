@@ -32,7 +32,7 @@ componentDidMount(){
 	this.fetchDevices();
 	this.props.navigation.setParams({
 		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos})}>
-		<Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
+		<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
 		</TouchableOpacity>});
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 		this.updateDevices();

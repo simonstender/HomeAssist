@@ -37,8 +37,8 @@ componentDidMount(){
 	this._isMounted = true;
 	this.fetchRooms();
 	this.props.navigation.setParams({
-		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
-			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
+		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
+			<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
 			</TouchableOpacity>})
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 		this.updateRooms();
@@ -94,7 +94,7 @@ insertion_Sort(data)
 }
 
 updateRooms(){
-  this.fetchRooms();
+	this.fetchRooms();
 	this.setState({isFetching: true})
 	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
@@ -154,16 +154,20 @@ updateRoom(item, status, color, allLights){
 
 onRefresh = (index) => {
 	this.setState({isFetching: true})
+	alert(this.state.data[index].lights)
 		if (typeof index !== "undefined") {
+			alert("undefined")
 			if (this.state.data[index].lights == "On") {
 				this.state.data[index].lights = "Off";
 				this.state.data[index].buttonColor = "green";
 				this.updateRoom(this.state.data[index], "Off", "green", "On")
 			}
 			else if (this.state.data[index].lights == "Off") {
+				alert("BUTTON OFF")
 				this.state.data[index].lights = "On";
 				this.state.data[index].buttonColor = "red";
 				this.updateRoom(this.state.data[index], "On", "red", "Off")
+				alert(this.state.data[index].lights)
 			}
 		}
 		this.setState({isFetching: false})
