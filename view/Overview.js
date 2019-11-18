@@ -236,6 +236,9 @@ return (
 										destructiveButtonIndex: DESTRUCTIVE_INDEX,
 										title: "Room Settings"},
 										buttonIndex => {
+											if (buttonIndex == 0) {
+												this.props.navigation.navigate("EditNameScreen", {object: "CRUD_r/room", key: this.state.data[index]._key, returnScreen: "OverviewScreen", roomName: this.state.data[index].name})
+											}
 											if (buttonIndex == 1) {
 												this.deleteRoom(item._key, item.name);
 											}
