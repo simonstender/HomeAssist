@@ -35,7 +35,6 @@ constructor(props){
 
 componentDidMount(){
 	this._isMounted = true;
-	this.fetchRooms();
 	this.props.navigation.setParams({
 		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
 			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
@@ -151,9 +150,41 @@ updateRoom(item, status, color, allLights){
 		})
 	})
 	.then((data) => {
-		if (data.status != "200") {
-			this.updateRooms();
+		if (data.status == "200") {
+			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+				method: "GET",
+				headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				},
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				for (var i = 0; i < Object.keys(data).length; i++) {
+					if (data[i].room == item.name) {
+						if (allLights == "On") {
+							this.updateDevice(data[i], "Off", "green")
+						} else if (allLights == "Off") {
+					 		this.updateDevice(data[i], "On", "red");
+						}
+					}
+				}
+			})
 		}
+	})
+}
+
+updateDevice(item, status, color){
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
+		method: "PATCH",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			lights: status,
+			buttonColor: color,
+		})
 	})
 }
 
