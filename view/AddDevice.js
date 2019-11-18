@@ -4,18 +4,18 @@ import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text
 import Slider from 'react-native-slider';
 
 var BUTTONS = [
-{ text: "Philips Glödlampa Standard 25W E27 230V P45", icon: "rowing", iconColor: "#2c8ef4" },
-{ text: "Glödlampa normal 220lm E27 25W", icon: "analytics", iconColor: "#f42ced" },
-{ text: "Philips CorePro LEDbulb E27 A60 8W 827 Matt", icon: "aperture", iconColor: "#ea943b" },
-{ text: "Philips Glödlampa Standard 25W E14 230V B35", icon: "aperture", iconColor: "#ea943b" },
-{ text: "Airam Smart LED ljuskälla - opal, 3-stegs dimring", icon: "aperture", iconColor: "#ea943b" },
-{ text: "Noxion Lucent Filament LED Lampa A60 E27 4W 827", icon: "aperture", iconColor: "#ea943b" },
-{ text: "E14 E14 LED-glödlampor C35T 1W 100LM 2200K", icon: "aperture", iconColor: "#ea943b" },
-{ text: "E27 LED-glödlampa 4W 470LM 2700K", icon: "aperture", iconColor: "#ea943b" },
-{ text: "Soft Glow LED 1,5W 140lm E27", icon: "aperture", iconColor: "#ea943b" },
-{ text: "E27 dimbar LED-glödlampa G95 5W 450lm 2700K", icon: "aperture", iconColor: "#ea943b" },
-{ text: "E28 dimbar LED-glödlampa G99 5W 450lm 3700K", icon: "aperture", iconColor: "#ea943b" },
-{ text: "Close", icon: "close", iconColor: "#25de5b" }
+{ text: "Philips Glödlampa Standard 25W E27 230V P45", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Glödlampa normal 220lm E27 25W", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips CorePro LEDbulb E27 A60 8W 827 Matt", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips Glödlampa Standard 25W E14 230V B35", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Airam Smart LED ljuskälla - opal, 3-stegs dimring", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Noxion Lucent Filament LED Lampa A60 E27 4W 827", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "E14 E14 LED-glödlampor C35T 1W 100LM 2200K", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "E27 LED-glödlampa 4W 470LM 2700K", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Soft Glow LED 1,5W 140lm E27", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "E27 dimbar LED-glödlampa G95 5W 450lm 2700K", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "E28 dimbar LED-glödlampa G99 5W 450lm 3700K", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Close", icon: "close", iconColor: "red" }
 ];
 
 var DESTRUCTIVE_INDEX = 11;
@@ -149,11 +149,11 @@ render() {
 								</ListItem>
 							</List>
 							{button}
-							<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
+							<Button style={{marginTop: 2, backgroundColor: 'green' }} onPress={() => this.addDevice()}>
 								<Icon name="add"/>
 								<Text style={{left: -255 }}>Add Device</Text>
 							</Button>
-							<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+							<Button style={{marginTop: 2, backgroundColor: '#f55858'}} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
 								<Icon name="close"/>
 								<Text style={{left: -273 }}>Cancel</Text>
 							</Button>

@@ -96,20 +96,23 @@ editName(){
 render() {
 	return (
 		<Container>
-				<Content padder>
-					<Form>
-						<Item floatingLabel>
-							<Label>New name</Label>
-							<Input onChangeText={(name) => this.setState({ name })}/>
-						</Item>
-						<Button onPress={() => this.editName()}>
-							<Text>Edit name</Text>
-						</Button>
-						<Button onPress={() => this.props.navigation.navigate(this.state.returnScreen)}>
-							<Text>Cancel</Text>
-						</Button>
-					</Form>
-				</Content>
+			<Content padder>
+				<Form>
+					<Text style={{marginTop: 30, left: 13, fontSize: 24}}>Enter room name</Text>
+					<Item floatingLabel>
+						<Label>New name</Label>
+						<Input onChangeText={(name) => this.setState({ name })}/>
+					</Item>
+					<Button style={{marginTop: 30, backgroundColor: 'green' }} onPress={() => this.editName()}>
+						<Icon name="add"/>
+						<Text style={{left: -263}} >Edit name</Text>
+					</Button>
+					<Button style={{marginTop: 2, backgroundColor: '#f55858'}} onPress={() => this.props.navigation.navigate(this.state.returnScreen)}>
+						<Icon name="close"/>
+						<Text style={{left: -280}}>Cancel</Text>
+					</Button>
+				</Form>
+			</Content>
 		</Container>
 	);
 }

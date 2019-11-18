@@ -78,26 +78,23 @@ addRoom(){
 render() {
 	return (
 		<Container>
-				<Content padder>
-					<Form>
-						<Item floatingLabel>
-							<Label>Room name</Label>
-							<Input
-              onChangeText={(name) => this.setState({ name })}
-              />
-						</Item>
-						<Button
-            onPress={() => this.addRoom()}
-            >
-							<Text>Add Room</Text>
-						</Button>
-            <Button
-            onPress={() => this.props.navigation.navigate("OverviewScreen")}
-            >
-							<Text>Cancel</Text>
-						</Button>
-					</Form>
-				</Content>
+			<Content padder>
+				<Form>
+					<Text style={{marginTop: 30, left: 13, fontSize: 24}}>Enter room name</Text>
+					<Item floatingLabel>
+						<Label>Room name</Label>
+						<Input onChangeText={(name) => this.setState({ name })}/>
+					</Item>
+					<Button style={{marginTop: 30, backgroundColor: 'green' }} onPress={() => this.addRoom()}>
+						<Icon name="add"/>
+						<Text style={{left: -263}}>Add Room</Text>
+					</Button>
+					<Button style={{marginTop: 2, backgroundColor: '#f55858'}} onPress={() => this.props.navigation.navigate("OverviewScreen")}>
+						<Icon name="close"/>
+						<Text style={{left: -280}}>Cancel</Text>
+					</Button>
+				</Form>
+			</Content>
 		</Container>
 	);
 }
