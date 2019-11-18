@@ -40,7 +40,7 @@ componentDidMount(){
 }
 
 fetchDevices(){
-	this.setState({isFetching: true, data: [], tempData: [], allData: [], numberOfDevices: 0})
+	this.setState({isFetching: true, data: [], tempData: [], allData: [], numberOfDevices: 0, topPos: 0})
 	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
