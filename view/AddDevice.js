@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox } from 'native-base';
 import Slider from 'react-native-slider';
 
 export default class AddRoom extends Component {
+<<<<<<< HEAD
   static navigationOptions = ({ navigation }) => {
     return {
       title: "Add Device",
@@ -28,11 +29,36 @@ export default class AddRoom extends Component {
   componentDidMount(){
     this._isMounted = true;
   }
+=======
+static navigationOptions = ({ navigation }) => {
+	return {
+		title: "Add Device",
+		headerLayoutPreset: "center",
+			headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
+			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
+			</TouchableOpacity>,
+			headerRight: null
+	};
+};
 
+constructor(props){
+	super(props);
+	this._isMounted = false;
+	this.state = {
+		name: "",
+		pos: parseInt(this.props.navigation.getParam("pos")) + 1,
+		itemSelected: 'true'
+	}
+}
+>>>>>>> 6ba999167e7a672cb9d2fb9f18a2cf00daefcfd0
 
-  componentWillUnmount(){
-    this._isMounted = false;
-  }
+componentDidMount(){
+	this._isMounted = true;
+}
+
+componentWillUnmount(){
+	this._isMounted = false;
+}
 
 addDevice(){
   if (this.state.name != "") {
@@ -45,7 +71,7 @@ addDevice(){
      body: JSON.stringify({
        _key: (this.state.pos).toString(),
        name: this.state.name,
-       isLight: true,
+       isLight: this.state.itemSelected,
        remainingLight: 0,
        lights: "On",
        buttonColor: "red",
@@ -89,50 +115,73 @@ addDevice(){
   }
 }
 
+
+
 render() {
-	return (
-		<Container>
-				<Content padder>
-					<Form>
-						<Item floatingLabel>
-							<Label>Device name</Label>
-							<Input onChangeText={(name) => this.setState({ name })}/>
-						</Item>
-						<Button onPress={() => this.addDevice()}>
-							<Text>Add device</Text>
-						</Button>
-						<Button onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
-							<Text>Cancel</Text>
-						</Button>
-					</Form>
-				</Content>
-		</Container>
-	);
+	let button;
+	if (this.state.itemSelected == 'true') {
+		button = <Button style={{marginTop: 25 }} onPress={() => this.addDevice()}><Icon name="open"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+	}
+	if (this.state.itemSelected == 'false') {
+		button = <Button style={{marginTop: 25}} disabled onPress={() => this.addDevice()}><Icon name="close"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+	}
+		return (
+			<Container>
+					<Content padder>
+						<Form>
+							<Item floatingLabel>
+								<Label>Device name</Label>
+								<Input onChangeText={(name) => this.setState({ name })}/>
+							</Item>
+							<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
+							<List>
+								<ListItem>
+									<CheckBox onPress={() => (this.setState({itemSelected: 'true' }))} checked={this.state.itemSelected == 'true'}/>
+									<Text style={{left: 10 }}>Lamp Category</Text>
+								</ListItem>
+								<ListItem>
+									<CheckBox onPress={() => (this.setState({itemSelected: 'false' }))} checked={this.state.itemSelected == 'false'}/>
+									<Text style={{left: 10 }}>Other Category</Text>
+								</ListItem>
+							</List>
+							{button}
+							<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
+								<Icon name="add"/>
+								<Text style={{left: -255 }}>Add Room</Text>
+							</Button>
+							<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+								<Icon name="close"/>
+								<Text style={{left: -273 }}>Cancel</Text>
+							</Button>
+						</Form>
+					</Content>
+			</Container>
+			);
 }
 }
 
-  const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  text: {
-    textAlign: "center"
-  },
-  item: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    backgroundColor: '#696969',
-    padding: 8,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    textShadowColor: "white",
-    textShadowRadius: 8,
-    alignSelf: "center"
-  },
-  });
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "white"
+	},
+	text: {
+		textAlign: "center"
+	},
+	item: {
+		flexDirection: "column",
+		justifyContent: "space-between",
+		backgroundColor: '#696969',
+		padding: 8,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
+	title: {
+		fontSize: 24,
+		textShadowColor: "white",
+		textShadowRadius: 8,
+		alignSelf: "center"
+	},
+});

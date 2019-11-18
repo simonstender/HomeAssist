@@ -102,21 +102,8 @@ updateDevices(){
 				allLights: "Hold"
 			})
 		})
-	.then(() => {this.setState({isFetching: false})})
-}
-
-updateDevice(item, status, color){
-	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + item._key, {
-		method: "PATCH",
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			lights: status,
-			buttonColor: color,
-		})
 	})
+	.then(() => {this.setState({isFetching: false})})
 }
 
 renderItem = ({ item, index }) => {
@@ -231,6 +218,20 @@ renderItem = ({ item, index }) => {
 		);
 	}
 };
+
+updateDevice(item, status, color){
+	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
+		method: "PATCH",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			lights: status,
+			buttonColor: color,
+		})
+	})
+}
 
 onRefresh = (index) => {this.setState({isFetching: true})
 	if (typeof index !== "undefined") {
