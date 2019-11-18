@@ -20,7 +20,6 @@ export default class Overview extends Component {
 		};
 };
 
-
 constructor(props){
 	super(props);
 	this._isMounted = false;
@@ -37,8 +36,8 @@ constructor(props){
 componentDidMount(){
 	this._isMounted = true;
 	this.props.navigation.setParams({
-		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
-			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
+		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
+			<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
 			</TouchableOpacity>})
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 	  this.fetchRooms();

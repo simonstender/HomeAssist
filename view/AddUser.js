@@ -58,14 +58,15 @@ render() {
 		<Container>
 				<Content padder>
 					<Form>
+						<Text style={{marginTop: 30, left: 13, fontSize: 24}}>Welcome, register your device!</Text>
 						<Item floatingLabel>
 							<Label>Your name</Label>
 							<Input onChangeText={(name) => this.setState({ name })}/>
 						</Item>
-						<Button onPress={() => this.addUser()}>
+						<Button style={{marginTop: 30,backgroundColor: 'green' }} onPress={() => this.addUser()}>
 							<Text>Accept</Text>
 						</Button>
-						<Button onPress={() => this.props.navigation.navigate("LoginScreen")}>
+						<Button style={{marginTop: 2,backgroundColor: '#f55858' }} onPress={() => this.props.navigation.navigate("LoginScreen")}>
 							<Text>Cancel</Text>
 						</Button>
 					</Form>
