@@ -21,7 +21,7 @@ constructor(props){
 	this.state = {
 		name: "",
 		pos: parseInt(this.props.navigation.getParam("pos")) + 1,
-		itemSelected: 'false'
+		itemSelected: 'true'
 	}
 }
 
@@ -44,7 +44,7 @@ addDevice(){
      body: JSON.stringify({
        _key: (this.state.pos).toString(),
        name: this.state.name,
-       isLight: true,
+       isLight: this.state.itemSelected,
        remainingLight: 0,
        lights: "On",
        buttonColor: "red",
@@ -73,6 +73,7 @@ addDevice(){
         		})
         	})
           .then((data) => {
+			  alert(this.props.navigation.getParam("roomKey"))
             if (data.status == "200") {
               this.props.navigation.navigate("RoomScreenScreen")
             } else {
@@ -88,42 +89,48 @@ addDevice(){
   }
 }
 
+
+
 render() {
-	return (
-		<Container>
-				<Content padder>
-					<Form>
-						<Item floatingLabel>
-							<Label>Device name</Label>
-							<Input onChangeText={(name) => this.setState({ name })}/>
-						</Item>
-						<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
-						<List>
-							<ListItem>
-								<CheckBox onPress={() => this.setState({ itemSelected: 'true' })} checked={this.state.itemSelected == 'true'}/>
-								<Text style={{left: 10 }}>Lamp</Text>
-							</ListItem>
-							<ListItem>
-								<CheckBox onPress={() => this.setState({ itemSelected: 'false' })} checked={this.state.itemSelected == 'false'}/>
-								<Text style={{left: 10 }}>Other</Text>
-							</ListItem>
-						</List>
-						<Button style={[(this.state.itemSelected == true) ? styles.buttonEnabled : styles.buttonDisabled]} onPress={() => this.addDevice()}>
-							<Icon name="add"/>
-							<Text style={{left: -195 }}>Catagory Options</Text>
-						</Button>
-						<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
-							<Icon name="add"/>
-							<Text style={{left: -255 }}>Add Room</Text>
-						</Button>
-						<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
-							<Icon name="close"/>
-							<Text style={{left: -273 }}>Cancel</Text>
-						</Button>
-					</Form>
-				</Content>
-		</Container>
-	);
+	let button;
+	if (this.state.itemSelected == 'true') {
+		button = <Button style={{marginTop: 25 }} onPress={() => this.addDevice()}><Icon name="open"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+	}
+	if (this.state.itemSelected == 'false') {
+		button = <Button style={{marginTop: 25}} disabled onPress={() => this.addDevice()}><Icon name="close"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+	}
+		return (
+			<Container>
+					<Content padder>
+						<Form>
+							<Item floatingLabel>
+								<Label>Device name</Label>
+								<Input onChangeText={(name) => this.setState({ name })}/>
+							</Item>
+							<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
+							<List>
+								<ListItem>
+									<CheckBox onPress={() => (this.setState({itemSelected: 'true' }))} checked={this.state.itemSelected == 'true'}/>
+									<Text style={{left: 10 }}>Lamp Category</Text>
+								</ListItem>
+								<ListItem>
+									<CheckBox onPress={() => (this.setState({itemSelected: 'false' }))} checked={this.state.itemSelected == 'false'}/>
+									<Text style={{left: 10 }}>Other Category</Text>
+								</ListItem>
+							</List>
+							{button}
+							<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
+								<Icon name="add"/>
+								<Text style={{left: -255 }}>Add Room</Text>
+							</Button>
+							<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+								<Icon name="close"/>
+								<Text style={{left: -273 }}>Cancel</Text>
+							</Button>
+						</Form>
+					</Content>
+			</Container>
+			);
 }
 }
 
@@ -146,18 +153,6 @@ const styles = StyleSheet.create({
 		marginHorizontal: 16,
 	},
 	title: {
-		fontSize: 24,
-		textShadowColor: "white",
-		textShadowRadius: 8,
-		alignSelf: "center"
-	},
-	buttonDisabled: {
-		fontSize: 24,
-		textShadowColor: "white",
-		textShadowRadius: 8,
-		alignSelf: "center"
-	},
-	buttonEnabled: {
 		fontSize: 24,
 		textShadowColor: "white",
 		textShadowRadius: 8,
