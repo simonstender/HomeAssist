@@ -200,7 +200,6 @@ onRefresh = (index) => {
 				this.state.data[index].lights = "On";
 				this.state.data[index].buttonColor = "red";
 				this.updateRoom(this.state.data[index], "On", "red", "Off")
-				alert(this.state.data[index].lights)
 			}
 		}
 		this.setState({isFetching: false})
