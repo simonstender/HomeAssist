@@ -20,7 +20,6 @@ export default class Overview extends Component {
 		};
 };
 
-
 constructor(props){
 	super(props);
 	this._isMounted = false;
@@ -191,16 +190,13 @@ updateDevice(item, status, color){
 
 onRefresh = (index) => {
 	this.setState({isFetching: true})
-	alert(this.state.data[index].lights)
 		if (typeof index !== "undefined") {
-			alert("undefined")
 			if (this.state.data[index].lights == "On") {
 				this.state.data[index].lights = "Off";
 				this.state.data[index].buttonColor = "green";
 				this.updateRoom(this.state.data[index], "Off", "green", "On")
 			}
 			else if (this.state.data[index].lights == "Off") {
-				alert("BUTTON OFF")
 				this.state.data[index].lights = "On";
 				this.state.data[index].buttonColor = "red";
 				this.updateRoom(this.state.data[index], "On", "red", "Off")

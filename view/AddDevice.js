@@ -3,8 +3,25 @@ import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox } from 'native-base';
 import Slider from 'react-native-slider';
 
+var BUTTONS = [
+{ text: "Philips Glödlampa Standard 25W E27 230V P45", icon: "rowing", iconColor: "#2c8ef4" },
+{ text: "Glödlampa normal 220lm E27 25W", icon: "analytics", iconColor: "#f42ced" },
+{ text: "Philips CorePro LEDbulb E27 A60 8W 827 Matt", icon: "aperture", iconColor: "#ea943b" },
+{ text: "Philips Glödlampa Standard 25W E14 230V B35", icon: "aperture", iconColor: "#ea943b" },
+{ text: "Airam Smart LED ljuskälla - opal, 3-stegs dimring", icon: "aperture", iconColor: "#ea943b" },
+{ text: "Noxion Lucent Filament LED Lampa A60 E27 4W 827", icon: "aperture", iconColor: "#ea943b" },
+{ text: "E14 E14 LED-glödlampor C35T 1W 100LM 2200K", icon: "aperture", iconColor: "#ea943b" },
+{ text: "E27 LED-glödlampa 4W 470LM 2700K", icon: "aperture", iconColor: "#ea943b" },
+{ text: "Soft Glow LED 1,5W 140lm E27", icon: "aperture", iconColor: "#ea943b" },
+{ text: "E27 dimbar LED-glödlampa G95 5W 450lm 2700K", icon: "aperture", iconColor: "#ea943b" },
+{ text: "E28 dimbar LED-glödlampa G99 5W 450lm 3700K", icon: "aperture", iconColor: "#ea943b" },
+{ text: "Close", icon: "close", iconColor: "#25de5b" }
+];
+
+var DESTRUCTIVE_INDEX = 11;
+var CANCEL_INDEX = 12;
+
 export default class AddRoom extends Component {
-<<<<<<< HEAD
   static navigationOptions = ({ navigation }) => {
     return {
       title: "Add Device",
@@ -25,32 +42,6 @@ export default class AddRoom extends Component {
       db: require("../dbIp.json")
     }
   }
-
-  componentDidMount(){
-    this._isMounted = true;
-  }
-=======
-static navigationOptions = ({ navigation }) => {
-	return {
-		title: "Add Device",
-		headerLayoutPreset: "center",
-			headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
-			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
-			</TouchableOpacity>,
-			headerRight: null
-	};
-};
-
-constructor(props){
-	super(props);
-	this._isMounted = false;
-	this.state = {
-		name: "",
-		pos: parseInt(this.props.navigation.getParam("pos")) + 1,
-		itemSelected: 'true'
-	}
-}
->>>>>>> 6ba999167e7a672cb9d2fb9f18a2cf00daefcfd0
 
 componentDidMount(){
 	this._isMounted = true;
@@ -116,14 +107,27 @@ addDevice(){
 }
 
 
-
 render() {
-	let button;
+	let button = <Button disabled style={{marginTop: 25 }} onPress={() => ActionSheet.show({
+			options: BUTTONS,
+			cancelButtonIndex: CANCEL_INDEX,
+			title: "Light Bubls Range "
+		},
+			buttonIndex => {
+			this.setState({ clicked: BUTTONS[buttonIndex] });
+		}
+	)}><Icon name="close"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+
 	if (this.state.itemSelected == 'true') {
-		button = <Button style={{marginTop: 25 }} onPress={() => this.addDevice()}><Icon name="open"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
-	}
-	if (this.state.itemSelected == 'false') {
-		button = <Button style={{marginTop: 25}} disabled onPress={() => this.addDevice()}><Icon name="close"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+		button = <Button style={{marginTop: 25 }} onPress={() => ActionSheet.show({
+				options: BUTTONS,
+				cancelButtonIndex: CANCEL_INDEX,
+				title: "Light Bubls Range "
+			},
+				buttonIndex => {
+				this.setState({ clicked: BUTTONS[buttonIndex] });
+				}
+			)}><Icon name="open"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
 	}
 		return (
 			<Container>
@@ -147,7 +151,7 @@ render() {
 							{button}
 							<Button style={{marginTop: 2 }} onPress={() => this.addDevice()}>
 								<Icon name="add"/>
-								<Text style={{left: -255 }}>Add Room</Text>
+								<Text style={{left: -255 }}>Add Device</Text>
 							</Button>
 							<Button style={{marginTop: 2 }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
 								<Icon name="close"/>
