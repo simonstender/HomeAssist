@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Root} from 'native-base'
 import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList, AsyncStorage} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View } from 'native-base';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 var BUTTONS = [
 	{ text: "Edit Name", icon: "create", iconColor: "#2c8ef4" },
@@ -299,9 +300,20 @@ deleteRoom(key, name){
 	}))
 }
 
+onSwipeRight() {
+	this.props.navigation.navigate("WelcomeScreen")
+}
+
 render() {
+	const config = {
+		velocityThreshold: 0.3,
+		directionalOffsetThreshold: 80
+	};
 	return (
-		<View style={styles.container}>
+		<GestureRecognizer
+		onSwipeRight={() => this.onSwipeRight()}
+		config={config}
+		style={styles.container}>
 		<FlatList
 			data={this.state.data}
 			renderItem={this.renderItem}
@@ -309,7 +321,7 @@ render() {
 			onRefresh={() => this.onRefresh()}
 			refreshing={this.state.isFetching}
 		/>
-		</View>
+		</GestureRecognizer>
 	);
 }
 }
