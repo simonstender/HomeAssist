@@ -10,6 +10,7 @@ import AddRoom from "./view/AddRoom"
 import AddDevice from "./view/AddDevice"
 import Welcome from "./view/Welcome"
 import AddUser from "./view/AddUser"
+import EditName from "./view/EditName"
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
@@ -18,7 +19,8 @@ const AppStackNavigator = createStackNavigator({
   AddRoomScreen: AddRoom,
   AddDeviceScreen: AddDevice,
   WelcomeScreen: Welcome,
-  AddUserScreen: AddUser
+  AddUserScreen: AddUser,
+  EditNameScreen: EditName
 },
 {
   defaultNavigationOptions: {

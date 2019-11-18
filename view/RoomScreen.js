@@ -160,6 +160,9 @@ renderItem = ({ item, index }) => {
 											destructiveButtonIndex: DESTRUCTIVE_INDEX,
 											title: "Device Settings"},
 											buttonIndex => {
+												if (buttonIndex == 0) {
+													this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
+												}
 												if (buttonIndex == 1) {
 													Alert.alert("Light bulb","17 Day, 1 Hour, 30 mins Estimated time remaining.")
 												}
@@ -215,6 +218,9 @@ renderItem = ({ item, index }) => {
 												destructiveButtonIndex: DESTRUCTIVE_INDEX,
 												title: "Device Settings"},
 												buttonIndex => {
+													if (buttonIndex == 0) {
+														this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
+													}
 													if (buttonIndex == 1) {
 														this.deleteDevice(item._key);
 													}
