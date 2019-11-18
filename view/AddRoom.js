@@ -20,7 +20,8 @@ export default class AddRoom extends Component {
     this._isMounted = false;
     this.state = {
       name: "",
-      pos: parseInt(this.props.navigation.getParam("pos")) + 1
+      pos: parseInt(this.props.navigation.getParam("pos")) + 1,
+      db: require("../dbIp.json")
     }
   }
 
@@ -35,7 +36,7 @@ export default class AddRoom extends Component {
 
 addRoom(){
 	if (this.state.name != "") {
-		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+		fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room", {
 			method: "GET",
 			headers: {
 				'Accept': 'application/json',
@@ -44,7 +45,7 @@ addRoom(){
 		})
 		.then((response) => response.json())
 		.then((data) => {
-			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room", {
 				method: "POST",
 				headers: {
 					'Accept': 'application/json',
@@ -65,7 +66,7 @@ addRoom(){
 					this.props.navigation.navigate("OverviewScreen")
 				}
 				else
-				alert(JSON.stringify(data));
+				alert("Something went wrong when creating your room");
 			})
 		})
 	}
