@@ -11,7 +11,7 @@ export default class Login extends Component {
     super(props);
     this._isMounted = false;
     this.state = {
-
+      db: require("../dbIp.json")
     }
   }
 
@@ -32,7 +32,7 @@ export default class Login extends Component {
               title="Connect to your home"
               color="green"
               style={styles.button}
-              onPress={() => this.props.navigation.navigate("OverviewScreen")}>
+              onPress={() => this.props.navigation.navigate("WelcomeScreen")}>
             </Button>
           </View>
       </ImageBackground>

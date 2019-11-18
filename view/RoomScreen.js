@@ -23,7 +23,8 @@ constructor(props){
 		allData: [],
 		data: [],
 		topPos: 0,
-		roomName: this.props.navigation.getParam("name")
+		roomName: this.props.navigation.getParam("name"),
+		db: require("../dbIp.json")
 	}
 }
 
@@ -40,7 +41,7 @@ componentDidMount(){
 
 fetchDevices(){
 	this.setState({isFetching: true, data: [], tempData: [], allData: [], numberOfDevices: 0})
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
@@ -91,7 +92,7 @@ componentWillUnmount(){
 }
 
 updateDevices(){
-		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+		fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 			method: "PATCH",
 			headers: {
 				'Accept': 'application/json',
@@ -105,7 +106,7 @@ updateDevices(){
 }
 
 updateDevice(item, status, color){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + item._key, {
 		method: "PATCH",
 		headers: {
 			'Accept': 'application/json',
@@ -248,7 +249,7 @@ onRefresh = (index) => {this.setState({isFetching: true})
 }
 
 deleteDevice(key){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + key, {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + key, {
 		method: "DELETE",
 		headers: {
 			'Accept': 'application/json',
@@ -257,7 +258,7 @@ deleteDevice(key){
 	})
 	.then((data) => {
 		if (data.status == "204") {
-			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 				method: "GET",
 				headers: {
 					'Accept': 'application/json',
@@ -266,7 +267,7 @@ deleteDevice(key){
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+				fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 					method: "PATCH",
 					headers: {
 						'Accept': 'application/json',
