@@ -2,21 +2,23 @@ import React, {Component} from 'react';
 import { TouchableOpacity, Image, AppRegistry, StyleSheet, Text, View } from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import {createDrawerNavigator} from 'react-navigation-drawer';
 
 import Login from "./view/Login"
 import Overview from "./view/Overview"
 import RoomScreen from "./view/RoomScreen"
 import AddRoom from "./view/AddRoom"
 import AddDevice from "./view/AddDevice"
-
+import Welcome from "./view/Welcome"
+import AddUser from "./view/AddUser"
 
 const AppStackNavigator = createStackNavigator({
   LoginScreen: Login,
   OverviewScreen: Overview,
   RoomScreenScreen: RoomScreen,
   AddRoomScreen: AddRoom,
-  AddDeviceScreen: AddDevice
+  AddDeviceScreen: AddDevice,
+  WelcomeScreen: Welcome,
+  AddUserScreen: AddUser
 },
 {
   defaultNavigationOptions: {
@@ -32,22 +34,6 @@ const AppStackNavigator = createStackNavigator({
       drawerLockMode: "locked-closed",
       gesturesEnabled: false,
     },
-  }
-);
-
-const AppDrawerNavigator = createDrawerNavigator({
-  Stäng: AppStackNavigator,
-  OverviewScreen: Overview
-},
-{
-  drawerLockMode: "locked-closed",
-  drawerBackgroundColor: "#696969",
-  contentOptions:{
-    labelStyle: {
-      fontSize: 24,
-      color: '#FFFFFF'},
-    }
-
   }
 );
 

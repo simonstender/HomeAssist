@@ -30,12 +30,12 @@ constructor(props){
 		tempData: [],
 		data: [],
 		topPos: 0,
+		db: require("../dbIp.json")
 	}
 }
 
 componentDidMount(){
 	this._isMounted = true;
-	this.fetchRooms();
 	this.props.navigation.setParams({
 		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
 			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
@@ -47,7 +47,7 @@ componentDidMount(){
 
 fetchRooms(){
 	this.setState({isFetching: true, data: []})
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room", {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
@@ -94,7 +94,7 @@ insertion_Sort(data)
 }
 
 updateRooms(){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
 		'Accept': 'application/json',
@@ -138,7 +138,7 @@ componentWillUnmount(){
 }
 
 updateRoom(item, status, color, allLights){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + item._key, {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + item._key, {
 		method: "PATCH",
 		headers: {
 			'Accept': 'application/json',
@@ -151,9 +151,41 @@ updateRoom(item, status, color, allLights){
 		})
 	})
 	.then((data) => {
-		if (data.status != "200") {
-			this.updateRooms();
+		if (data.status == "200") {
+			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+				method: "GET",
+				headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+				},
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				for (var i = 0; i < Object.keys(data).length; i++) {
+					if (data[i].room == item.name) {
+						if (allLights == "On") {
+							this.updateDevice(data[i], "Off", "green")
+						} else if (allLights == "Off") {
+					 		this.updateDevice(data[i], "On", "red");
+						}
+					}
+				}
+			})
 		}
+	})
+}
+
+updateDevice(item, status, color){
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + item._key, {
+		method: "PATCH",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			lights: status,
+			buttonColor: color,
+		})
 	})
 }
 
@@ -222,7 +254,7 @@ return (
 };
 
 deleteRoom(key, name){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
 		'Accept': 'application/json',
@@ -233,7 +265,7 @@ deleteRoom(key, name){
 	.then((data) => {
 		for (var i = 0; i < Object.keys(data).length; i++) {
 			if (data[i].room == name) {
-				fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + data[i]._key, {
+				fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + data[i]._key, {
 					method: "DELETE",
 					headers: {
 						'Accept': 'application/json',
@@ -249,7 +281,7 @@ deleteRoom(key, name){
 		}
 	})
 	.then(
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + key, {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + key, {
 		method: "DELETE",
 		headers: {
 			'Accept': 'application/json',

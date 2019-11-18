@@ -8,7 +8,7 @@ export default class AddRoom extends Component {
     return {
       title: "Add Device",
       headerLayoutPreset: "center",
-      headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
+      headerLeft: <TouchableOpacity onPress={() => navigation.navigate("RoomScreenScreen")}>
   			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
   			</TouchableOpacity>,
       headerRight: null
@@ -20,7 +20,8 @@ export default class AddRoom extends Component {
     this._isMounted = false;
     this.state = {
       name: "",
-      pos: parseInt(this.props.navigation.getParam("pos")) + 1
+      pos: parseInt(this.props.navigation.getParam("pos")) + 1,
+      db: require("../dbIp.json")
     }
   }
 
@@ -35,7 +36,7 @@ export default class AddRoom extends Component {
 
 addDevice(){
   if (this.state.name != "") {
-    fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
       method: "POST",
       headers: {
      'Accept': 'application/json',
@@ -53,7 +54,7 @@ addDevice(){
     })
     .then((data) => {
       if (data.status == "201") {
-        fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
           method: "GET",
           headers: {
             'Accept': 'application/json',
@@ -62,7 +63,7 @@ addDevice(){
       })
         .then((response) => response.json())
         .then((data) => {
-          fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+          fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
         		method: "PATCH",
         		headers: {
         			'Accept': 'application/json',

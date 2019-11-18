@@ -23,13 +23,13 @@ constructor(props){
 		allData: [],
 		data: [],
 		topPos: 0,
-		roomName: this.props.navigation.getParam("name")
+		roomName: this.props.navigation.getParam("name"),
+		db: require("../dbIp.json")
 	}
 }
 
 componentDidMount(){
 	this._isMounted = true;
-	this.fetchDevices();
 	this.props.navigation.setParams({
 		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos, roomKey: this.props.navigation.getParam("key")})}>
 		<Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
@@ -41,7 +41,7 @@ componentDidMount(){
 
 fetchDevices(){
 	this.setState({isFetching: true, data: [], tempData: [], allData: [], numberOfDevices: 0})
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device", {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
 		method: "GET",
 		headers: {
 			'Accept': 'application/json',
@@ -92,34 +92,7 @@ componentWillUnmount(){
 }
 
 updateDevices(){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room", {
-		method: "GET",
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		},
-})
-	.then((response) => response.json())
-	.then((data) => {
-		for (var i = 0; i < Object.keys(data).length; i++) {
-			if (data[i].name == this.props.navigation.getParam("name")) {
-				if (data[i].allLights == "On") {
-					for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-						this.state.data[j].lights = "Off";
-						this.state.data[j].buttonColor = "green";
-						this.updateDevice(this.state.data[j], "Off", "green")
-					}
-				}
-				else if (data[i].allLights == "Off") {
-					for (var j = 0; j < Object.keys(this.state.data).length; j++) {
-						this.state.data[j].lights = "On";
-						this.state.data[j].buttonColor = "red";
-						this.updateDevice(this.state.data[j], "On", "red")
-					}
-				}
-			}
-		}
-		fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+		fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 			method: "PATCH",
 			headers: {
 				'Accept': 'application/json',
@@ -129,8 +102,21 @@ updateDevices(){
 				allLights: "Hold"
 			})
 		})
-	})
 	.then(() => {this.setState({isFetching: false})})
+}
+
+updateDevice(item, status, color){
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + item._key, {
+		method: "PATCH",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			lights: status,
+			buttonColor: color,
+		})
+	})
 }
 
 renderItem = ({ item, index }) => {
@@ -246,20 +232,6 @@ renderItem = ({ item, index }) => {
 	}
 };
 
-updateDevice(item, status, color){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + item._key, {
-		method: "PATCH",
-		headers: {
-			'Accept': 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			lights: status,
-			buttonColor: color,
-		})
-	})
-}
-
 onRefresh = (index) => {this.setState({isFetching: true})
 	if (typeof index !== "undefined") {
 		if (this.state.data[index].lights == "On") {
@@ -277,7 +249,7 @@ onRefresh = (index) => {this.setState({isFetching: true})
 }
 
 deleteDevice(key){
-	fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_d/device/" + key, {
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + key, {
 		method: "DELETE",
 		headers: {
 			'Accept': 'application/json',
@@ -286,7 +258,7 @@ deleteDevice(key){
 	})
 	.then((data) => {
 		if (data.status == "204") {
-			fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 				method: "GET",
 				headers: {
 					'Accept': 'application/json',
@@ -295,7 +267,7 @@ deleteDevice(key){
 		})
 			.then((response) => response.json())
 			.then((data) => {
-				fetch("http://80.78.219.10:8529/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
+				fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("key"), {
 					method: "PATCH",
 					headers: {
 						'Accept': 'application/json',
