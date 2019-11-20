@@ -98,7 +98,7 @@ render() {
 		<Container>
 			<Content padder>
 				<Form>
-					<Text style={{marginTop: 30, left: 13, fontSize: 24}}>Enter room name</Text>
+					<Text style={{marginTop: 30, left: 13, fontSize: 24}}>Enter name</Text>
 					<Item floatingLabel>
 						<Label>New name</Label>
 						<Input onChangeText={(name) => this.setState({ name })}/>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground, Image} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View, Alert, ImageBackground, Image} from 'react-native';
+import {CheckBox, Icon, Button, List, ListItem, Right} from 'native-base';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,6 +15,7 @@ export default class Login extends Component {
       db: require("../dbIp.json"),
       id: "",
       pw: "",
+      checked: false
     }
   }
 
@@ -25,7 +27,7 @@ export default class Login extends Component {
     this._isMounted = false;
   }
 
-  identifyDevice() {
+  checkLogin() {
     fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/" + this.state.id, {
       method: "GET",
       headers: {
@@ -45,6 +47,14 @@ export default class Login extends Component {
     })
   }
 
+rememberMe(){
+  if (this.state.checked == false) {
+    this.setState({checked: true})
+  } else {
+    this.setState({checked: false})
+  }
+}
+
   render() {
     return (
         <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
@@ -62,12 +72,13 @@ export default class Login extends Component {
                 placeholder="Password"
                 secureTextEntry={true}
                 placeholderTextColor = "#002f6c"/>
-            <Button
-              title="Connect"
-              color="green"
-              style={styles.button}
-              onPress={() => this.identifyDevice()}>
-            </Button>
+                <View style={styles.checkBox}>
+  									<CheckBox onPress={() => this.rememberMe()} color="#002f6c" checked={this.state.checked}/>
+                    <Text style={styles.checkBoxText}>Remember me</Text>
+  							</View>
+                <Button onPress={() => this.checkLogin()} iconLeft style={{marginTop: 20, backgroundColor: 'green', width: 214}}>
+                <Icon name="log-in"/>
+                <Text style={{right: 30, color: "white"}}>Connect to device</Text></Button>
         </ImageBackground>
     );
   }
@@ -81,17 +92,14 @@ const styles = StyleSheet.create({
         opacity: 50,
     },
     text: {
-        fontSize: 70,
+        fontSize: 40,
         color: "white",
         fontStyle: "italic",
         fontWeight: "500",
         textDecorationLine: "underline",
         textShadowColor: "green",
         textShadowRadius: 8,
-        marginBottom: 50
-    },
-    button: {
-        marginTop: 50
+        bottom: 50
     },
     inputBox: {
         width: 300,
@@ -101,9 +109,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#002f6c',
         marginVertical: 10,
-        marginBottom: 20
+        padding: 10,
     },
     image: {
-        marginBottom:50
+        bottom: 75,
+        height: 75,
+        width: 75
+    },
+    checkBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#eeeeee",
+      height: 25,
+      width: 150,
+      borderRadius: 25
+    },
+    checkBoxText: {
+      left: 10,
+      color: "#002f6c",
+      fontSize: 14,
+      paddingLeft: 10
     }
+
 });
