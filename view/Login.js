@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground, TouchableOpacity} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground} from 'react-native';
+//import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -53,13 +54,13 @@ export default class Login extends Component {
             <TextInput style={styles.inputBox}
                 onChangeText={(id) => this.setState({ id })}
                 underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Enter device id"
+                placeholder="Device id"
                 placeholderTextColor = "#002f6c"
                 selectionColor="#fff"/>
             <TextInput style={styles.inputBox}
                 onChangeText={(pw) => this.setState({ pw })}
                 underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Enter password"
+                placeholder="Password"
                 secureTextEntry={true}
                 placeholderTextColor = "#002f6c"/>
             <Button
