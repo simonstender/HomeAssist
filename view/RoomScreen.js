@@ -32,7 +32,7 @@ componentDidMount(){
 	this._isMounted = true;
 	this.props.navigation.setParams({
 		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddDeviceScreen", {name: this.props.navigation.getParam("name"), pos: this.state.topPos, roomKey: this.props.navigation.getParam("key")})}>
-		<Icon style={{ height: 30, width: 64, left: 20 }} name="add"/>
+		<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
 		</TouchableOpacity>});
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 		this.fetchDevices();
@@ -123,7 +123,7 @@ renderItem = ({ item, index }) => {
 	if (this.state.data[index].isLight == true) {
 		var BUTTONS = [
 			{ text: "Edit name", icon: "create", iconColor: "#2c8ef4" },
-			{ text: "Light bulb",icon:"create", iconColor: "#2c8ef4" },
+			{ text: "Light bulb",icon:"md-bulb", iconColor: "#c2bc04" },
 			{ text: "Delete", icon: "trash", iconColor: "#fa213b" },
 			{ text: "Close", icon: "close", iconColor: "#25de5b" }
 		];
@@ -160,6 +160,9 @@ renderItem = ({ item, index }) => {
 											destructiveButtonIndex: DESTRUCTIVE_INDEX,
 											title: "Device Settings"},
 											buttonIndex => {
+												if (buttonIndex == 0) {
+													this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
+												}
 												if (buttonIndex == 1) {
 													Alert.alert("Light bulb","17 Day, 1 Hour, 30 mins Estimated time remaining.")
 												}
@@ -215,6 +218,9 @@ renderItem = ({ item, index }) => {
 												destructiveButtonIndex: DESTRUCTIVE_INDEX,
 												title: "Device Settings"},
 												buttonIndex => {
+													if (buttonIndex == 0) {
+														this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
+													}
 													if (buttonIndex == 1) {
 														this.deleteDevice(item._key);
 													}

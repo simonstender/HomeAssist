@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity, Alert, View, Text, Button} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import {Icon} from 'native-base';
 
 export default class Welcome extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -26,10 +28,12 @@ componentDidMount(){
   });
 }
 
-
-
 componentWillUnmount(){
   this._isMounted = false;
+}
+
+onSwipeLeft() {
+	this.props.navigation.navigate("OverviewScreen")
 }
 
 identifyUser(id){
@@ -51,14 +55,18 @@ identifyUser(id){
 }
 
 render() {
+	const config = {
+		velocityThreshold: 0.3,
+		directionalOffsetThreshold: 80
+	};
 	return (
-		<View style={styles.container}>
-      <Text style={styles.text}>Welcome {this.state.name}</Text>
-      <Button
-      title="To overview"
-      onPress={() => this.props.navigation.navigate("OverviewScreen")}
-      />
-    </View>
+		<GestureRecognizer
+		onSwipeLeft={() => this.onSwipeLeft()}
+		config={config}
+		style={styles.container}>
+		<Text style={styles.text}>Welcome {this.state.name}</Text>
+		<Text style={styles.text}>Swipe left to continue</Text>
+		</GestureRecognizer>
 	);
 }
 }

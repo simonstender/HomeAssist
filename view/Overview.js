@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Root} from 'native-base'
 import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList, AsyncStorage} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View } from 'native-base';
+import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
 var BUTTONS = [
 	{ text: "Edit Name", icon: "create", iconColor: "#2c8ef4" },
@@ -20,7 +21,6 @@ export default class Overview extends Component {
 		};
 };
 
-
 constructor(props){
 	super(props);
 	this._isMounted = false;
@@ -37,8 +37,8 @@ constructor(props){
 componentDidMount(){
 	this._isMounted = true;
 	this.props.navigation.setParams({
-		headerRight: 	<TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
-			<Image style={{ height: 44, width: 44, right: 10 }} source={require("../images/greenPlus.png")}/>
+		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
+			<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
 			</TouchableOpacity>})
 	this.focusListener = this.props.navigation.addListener('didFocus', () => {
 	  this.fetchRooms();
@@ -236,6 +236,9 @@ return (
 										destructiveButtonIndex: DESTRUCTIVE_INDEX,
 										title: "Room Settings"},
 										buttonIndex => {
+											if (buttonIndex == 0) {
+												this.props.navigation.navigate("EditNameScreen", {object: "CRUD_r/room", key: this.state.data[index]._key, returnScreen: "OverviewScreen", roomName: this.state.data[index].name})
+											}
 											if (buttonIndex == 1) {
 												this.deleteRoom(item._key, item.name);
 											}
@@ -297,9 +300,20 @@ deleteRoom(key, name){
 	}))
 }
 
+onSwipeRight() {
+	this.props.navigation.navigate("WelcomeScreen")
+}
+
 render() {
+	const config = {
+		velocityThreshold: 0.3,
+		directionalOffsetThreshold: 80
+	};
 	return (
-		<View style={styles.container}>
+		<GestureRecognizer
+		onSwipeRight={() => this.onSwipeRight()}
+		config={config}
+		style={styles.container}>
 		<FlatList
 			data={this.state.data}
 			renderItem={this.renderItem}
@@ -307,7 +321,7 @@ render() {
 			onRefresh={() => this.onRefresh()}
 			refreshing={this.state.isFetching}
 		/>
-		</View>
+		</GestureRecognizer>
 	);
 }
 }
