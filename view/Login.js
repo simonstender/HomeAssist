@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground} from 'react-native';
-//import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
+import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground, Image} from 'react-native';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -14,7 +13,7 @@ export default class Login extends Component {
     this.state = {
       db: require("../dbIp.json"),
       id: "",
-      pw: ""
+      pw: "",
     }
   }
 
@@ -48,9 +47,9 @@ export default class Login extends Component {
 
   render() {
     return (
-      <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
-        <Text style={styles.text}>ELIAS</Text>
-          <View style={styles.button}>
+        <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
+          <Image source={require("../images/logo.png")} style={styles.image}></Image>
+          <Text style={styles.text}>ELIAS</Text>
             <TextInput style={styles.inputBox}
                 onChangeText={(id) => this.setState({ id })}
                 underlineColorAndroid='rgba(0,0,0,0)'
@@ -64,13 +63,12 @@ export default class Login extends Component {
                 secureTextEntry={true}
                 placeholderTextColor = "#002f6c"/>
             <Button
-              title="Connect to your home"
+              title="Connect"
               color="green"
               style={styles.button}
               onPress={() => this.identifyDevice()}>
             </Button>
-          </View>
-      </ImageBackground>
+        </ImageBackground>
     );
   }
 }
@@ -90,11 +88,10 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline",
         textShadowColor: "green",
         textShadowRadius: 8,
-        bottom: 150
+        marginBottom: 50
     },
     button: {
-        position: "absolute",
-        bottom: 300
+        marginTop: 50
     },
     inputBox: {
         width: 300,
@@ -104,6 +101,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#002f6c',
         marginVertical: 10,
-        bottom: 50
+        marginBottom: 20
+    },
+    image: {
+        marginBottom:50
     }
 });
