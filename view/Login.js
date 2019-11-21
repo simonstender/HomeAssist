@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, TextInput, View, Alert, ImageBackground, Image} from 'react-native';
 import {CheckBox, Icon, Button, List, ListItem, Right} from 'native-base';
+import DeviceInfo from 'react-native-device-info';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -13,14 +14,29 @@ export default class Login extends Component {
     this._isMounted = false;
     this.state = {
       db: require("../dbIp.json"),
-      id: "",
-      pw: "",
-      checked: false
+      id: "Device id",
+      pw: "Password",
+      checked: false,
+      rememberMe: false,
+      deviceId: DeviceInfo.getUniqueId()
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.rememberMe == true) {
+        this.rememberMe()
+      }
+    })
   }
 
   componentWillUnmount(){
@@ -37,10 +53,10 @@ export default class Login extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      if (data.errorNum === "404") {
+      if (data.errorNum == "404") {
         alert("No connection to the device.");
-    } else if (this.state.pw === data.password) {
-        this.props.navigation.navigate("WelcomeScreen");
+    } else if (this.state.pw == data.password) {
+        this.props.navigation.navigate("WelcomeScreen", {rememberMe: this.state.rememberMe});
     } else {
         alert("Wrong id or password.");
       }
@@ -49,9 +65,36 @@ export default class Login extends Component {
 
 rememberMe(){
   if (this.state.checked == false) {
-    this.setState({checked: true})
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errorNum == "404") {
+        this.state.rememberMe = true;
+      } else {
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.errorNum != 400) {
+            this.setState({id: data[0]._key, pw: data[0].password})
+          }
+        })
+      }
+    })
+    .then(() => this.setState({checked: true}))
   } else {
-    this.setState({checked: false})
+    this.setState({checked: false, id: "Device id", pw: "Password"})
   }
 }
 
@@ -63,15 +106,17 @@ rememberMe(){
             <TextInput style={styles.inputBox}
                 onChangeText={(id) => this.setState({ id })}
                 underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Device id"
+                placeholder={this.state.id}
                 placeholderTextColor = "#002f6c"
-                selectionColor="#fff"/>
+                selectionColor="#fff"
+                />
             <TextInput style={styles.inputBox}
                 onChangeText={(pw) => this.setState({ pw })}
                 underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Password"
+                placeholder={this.state.pw}
                 secureTextEntry={true}
-                placeholderTextColor = "#002f6c"/>
+                placeholderTextColor = "#002f6c"
+                />
                 <View style={styles.checkBox}>
   									<CheckBox onPress={() => this.rememberMe()} color="#002f6c" checked={this.state.checked}/>
                     <Text style={styles.checkBoxText}>Remember me</Text>

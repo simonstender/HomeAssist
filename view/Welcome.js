@@ -16,7 +16,8 @@ constructor(props){
   this._isMounted = false;
   this.state = {
     name: "",
-    db: require("../dbIp.json")
+    db: require("../dbIp.json"),
+    rememberMe: this.props.navigation.getParam("rememberMe")
   }
 }
 
@@ -47,7 +48,7 @@ identifyUser(id){
   .then((response) => response.json())
   .then((data) => {
     if (data.errorNum == "404") {
-      this.props.navigation.navigate("AddUserScreen", {id: id});
+      this.props.navigation.navigate("AddUserScreen", {id: id, rememberMe: this.state.rememberMe});
     } else {
       this.setState({name: data.name})
     }

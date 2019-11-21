@@ -15,7 +15,8 @@ export default class AddUser extends Component {
     this._isMounted = false;
     this.state = {
       name: "",
-      db: require("../dbIp.json")
+      db: require("../dbIp.json"),
+      rememberMe: this.props.navigation.getParam("rememberMe")
     }
   }
 
@@ -39,11 +40,28 @@ addUser(){
      body: JSON.stringify({
        _key: this.props.navigation.getParam("id"),
        name: this.state.name,
+       rememberMe: false
      })
     })
     .then((data) => {
       if (data.status == "201") {
-        this.props.navigation.navigate("WelcomeScreen")
+        if (this.state.rememberMe == true) {
+          fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.props.navigation.getParam("id"), {
+        		method: "PATCH",
+        		headers: {
+        			'Accept': 'application/json',
+        			'Content-Type': 'application/json',
+        		},
+        		body: JSON.stringify({
+              rememberMe: true
+        		})
+        	})
+          .then((data) => {
+            if (data.status == "200") {
+              this.props.navigation.navigate("WelcomeScreen")
+            }
+          })
+        }
       } else if (data.status != "201") {
         alert("Something went wrong when adding you to the application");
       }
