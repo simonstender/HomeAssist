@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, TextInput, View, Button, Alert, ImageBackground, Image} from 'react-native';
+import {Platform, StyleSheet, Text, TextInput, View, Alert, ImageBackground, Image} from 'react-native';
+import {CheckBox, Icon, Button, List, ListItem, Right} from 'native-base';
+import DeviceInfo from 'react-native-device-info';
 
 export default class Login extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -12,20 +14,37 @@ export default class Login extends Component {
     this._isMounted = false;
     this.state = {
       db: require("../dbIp.json"),
-      id: "",
-      pw: "",
+      id: "Device id",
+      pw: "Password",
+      checked: false,
+      rememberMe: false,
+      deviceId: DeviceInfo.getUniqueId(),
+      userFound: false
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.rememberMe == true) {
+        this.rememberMe();
+      }
+    })
   }
 
   componentWillUnmount(){
     this._isMounted = false;
   }
 
-  identifyDevice() {
+  checkLogin() {
     fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/" + this.state.id, {
       method: "GET",
       headers: {
@@ -35,41 +54,176 @@ export default class Login extends Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      if (data.errorNum === "404") {
+      if (data.errorNum == "404") {
         alert("No connection to the device.");
-    } else if (this.state.pw === data.password) {
-        this.props.navigation.navigate("WelcomeScreen");
+    } else if (this.state.pw == data.password) {
+        this.props.navigation.navigate("WelcomeScreen", {rememberMe: this.state.rememberMe});
     } else {
         alert("Wrong id or password.");
       }
     })
   }
 
+rememberMe(){
+  if (this.state.checked == false) {
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+      method: "GET",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.errorNum == "404") {
+        this.setState({checked: true, rememberMe: true})
+      } else if (data.rememberMe == true) {
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.errorNum != 400) {
+            this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true})
+          }
+        })
+      } else if (data.rememberMe == false) {
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+          method: "PATCH",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            rememberMe: true
+          })
+        })
+        .then((data) => {
+          if (data.status == "200") {
+            fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
+              method: "GET",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+              },
+            })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.errorNum != 400) {
+                this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true})
+              }
+            })
+          }
+        })
+      }
+    })
+  } else {
+    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+      method: "PATCH",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        rememberMe: false
+      })
+    })
+    .then(() => this.setState({checked: false}))
+  }
+}
+
   render() {
-    return (
-        <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
-          <Image source={require("../images/logo.png")} style={styles.image}></Image>
-          <Text style={styles.text}>ELIAS</Text>
-            <TextInput style={styles.inputBox}
-                onChangeText={(id) => this.setState({ id })}
-                underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Device id"
-                placeholderTextColor = "#002f6c"
-                selectionColor="#fff"/>
-            <TextInput style={styles.inputBox}
-                onChangeText={(pw) => this.setState({ pw })}
-                underlineColorAndroid='rgba(0,0,0,0)'
-                placeholder="Password"
-                secureTextEntry={true}
-                placeholderTextColor = "#002f6c"/>
-            <Button
-              title="Connect"
-              color="green"
-              style={styles.button}
-              onPress={() => this.identifyDevice()}>
-            </Button>
-        </ImageBackground>
-    );
+    if (this.state.checked == true && this.state.userFound == true) {
+      return (
+          <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
+            <Image source={require("../images/logo.png")} style={styles.image}></Image>
+            <Text style={styles.text}>ELIAS</Text>
+              <TextInput style={styles.inputBox}
+                  onChangeText={(id) => this.setState({ id })}
+                  onChange={() => this.setState({checked: false})}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  value={this.state.id}
+                  placeholderTextColor = "#002f6c"
+                  selectionColor="#fff"
+                  />
+              <TextInput style={styles.inputBox}
+                  onChangeText={(pw) => this.setState({ pw })}
+                  onChange={() => this.setState({checked: false})}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  value={this.state.pw}
+                  secureTextEntry={true}
+                  placeholderTextColor = "#002f6c"
+                  />
+                  <View style={styles.checkBox}>
+    									<CheckBox onPress={() => this.rememberMe()} color="#002f6c" checked={this.state.checked}/>
+                      <Text style={styles.checkBoxText}>Remember me</Text>
+    							</View>
+                  <Button onPress={() => this.checkLogin()} iconLeft style={{marginTop: 20, backgroundColor: 'green', width: 214}}>
+                  <Icon name="log-in"/>
+                  <Text style={{right: 30, color: "white"}}>Connect to device</Text></Button>
+          </ImageBackground>
+      );
+    } else if (this.state.checked == true && this.state.userFound == false) {
+      return (
+          <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
+            <Image source={require("../images/logo.png")} style={styles.image}></Image>
+            <Text style={styles.text}>ELIAS</Text>
+              <TextInput style={styles.inputBox}
+                  onChangeText={(id) => this.setState({ id })}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  placeholder="Device id"
+                  placeholderTextColor = "#002f6c"
+                  selectionColor="#fff"
+                  />
+              <TextInput style={styles.inputBox}
+                  onChangeText={(pw) => this.setState({ pw })}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  placeholder="Password"
+                  secureTextEntry={false}
+                  placeholderTextColor = "#002f6c"
+                  />
+                  <View style={styles.checkBox}>
+    									<CheckBox onPress={() => this.rememberMe()} color="#002f6c" checked={this.state.checked}/>
+                      <Text style={styles.checkBoxText}>Remember me</Text>
+    							</View>
+                  <Button onPress={() => this.checkLogin()} iconLeft style={{marginTop: 20, backgroundColor: 'green', width: 214}}>
+                  <Icon name="log-in"/>
+                  <Text style={{right: 30, color: "white"}}>Connect to device</Text></Button>
+          </ImageBackground>
+      );
+    } else if (this.state.checked == false ) {
+      return (
+          <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
+            <Image source={require("../images/logo.png")} style={styles.image}></Image>
+            <Text style={styles.text}>ELIAS</Text>
+              <TextInput style={styles.inputBox}
+                  onChangeText={(id) => this.setState({ id })}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  placeholder="Device id"
+                  placeholderTextColor = "#002f6c"
+                  selectionColor="#fff"
+                  />
+              <TextInput style={styles.inputBox}
+                  onChangeText={(pw) => this.setState({ pw })}
+                  underlineColorAndroid='rgba(0,0,0,0)'
+                  placeholder="Password"
+                  secureTextEntry={false}
+                  placeholderTextColor = "#002f6c"
+                  />
+                  <View style={styles.checkBox}>
+    									<CheckBox onPress={() => this.rememberMe()} color="#002f6c" checked={this.state.checked}/>
+                      <Text style={styles.checkBoxText}>Remember me</Text>
+    							</View>
+                  <Button onPress={() => this.checkLogin()} iconLeft style={{marginTop: 20, backgroundColor: 'green', width: 214}}>
+                  <Icon name="log-in"/>
+                  <Text style={{right: 30, color: "white"}}>Connect to device</Text></Button>
+          </ImageBackground>
+      );
+    }
   }
 }
 
@@ -81,17 +235,14 @@ const styles = StyleSheet.create({
         opacity: 50,
     },
     text: {
-        fontSize: 70,
+        fontSize: 40,
         color: "white",
         fontStyle: "italic",
         fontWeight: "500",
         textDecorationLine: "underline",
         textShadowColor: "green",
         textShadowRadius: 8,
-        marginBottom: 50
-    },
-    button: {
-        marginTop: 50
+        bottom: 50
     },
     inputBox: {
         width: 300,
@@ -101,9 +252,26 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#002f6c',
         marginVertical: 10,
-        marginBottom: 20
+        padding: 10,
     },
     image: {
-        marginBottom:50
+        bottom: 75,
+        height: 75,
+        width: 75
+    },
+    checkBox: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#eeeeee",
+      height: 25,
+      width: 150,
+      borderRadius: 25
+    },
+    checkBoxText: {
+      left: 10,
+      color: "#002f6c",
+      fontSize: 14,
+      paddingLeft: 10
     }
+
 });

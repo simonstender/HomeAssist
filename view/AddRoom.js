@@ -85,13 +85,13 @@ render() {
 						<Label>Room name</Label>
 						<Input onChangeText={(name) => this.setState({ name })}/>
 					</Item>
-					<Button style={{marginTop: 30, backgroundColor: 'green' }} onPress={() => this.addRoom()}>
-						<Icon name="add"/>
-						<Text style={{left: -263}}>Add Room</Text>
+					<Button style={{marginTop: 30, backgroundColor: 'green', justifyContent: "center" }} onPress={() => this.addRoom()}>
+						<Icon name="add" style={{position: "absolute", right: "86%"}}/>
+						<Text style={{}}>Add Room</Text>
 					</Button>
-					<Button style={{marginTop: 2, backgroundColor: '#f55858'}} onPress={() => this.props.navigation.navigate("OverviewScreen")}>
-						<Icon name="close"/>
-						<Text style={{left: -280}}>Cancel</Text>
+					<Button style={{marginTop: 2, backgroundColor: '#f55858', justifyContent: "center"}} onPress={() => this.props.navigation.navigate("OverviewScreen")}>
+						<Icon name="close" style={{position: "absolute", right: "86%"}}/>
+						<Text>Cancel</Text>
 					</Button>
 				</Form>
 			</Content>
