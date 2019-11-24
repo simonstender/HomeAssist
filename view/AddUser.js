@@ -82,11 +82,13 @@ render() {
 							<Label>Your name</Label>
 							<Input onChangeText={(name) => this.setState({ name })}/>
 						</Item>
-						<Button style={{marginTop: 30,backgroundColor: 'green' }} onPress={() => this.addUser()}>
+						<Button style={{marginTop: 30,backgroundColor: 'green', justifyContent: "center" }} onPress={() => this.addUser()}>
+              <Icon name="add" style={{position: "absolute", right: "86%"}}/>
 							<Text>Accept</Text>
 						</Button>
-						<Button style={{marginTop: 2,backgroundColor: '#f55858' }} onPress={() => this.props.navigation.navigate("LoginScreen")}>
-							<Text>Cancel</Text>
+						<Button style={{marginTop: 2,backgroundColor: '#f55858', justifyContent: "center" }} onPress={() => this.props.navigation.navigate("LoginScreen")}>
+              <Icon name="close" style={{position: "absolute", right: "86%"}}/>
+              <Text>Cancel</Text>
 						</Button>
 					</Form>
 				</Content>
