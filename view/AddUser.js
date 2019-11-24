@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label } from 'native-base';
-import Slider from 'react-native-slider';
 
 export default class AddUser extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -61,8 +60,10 @@ addUser(){
               this.props.navigation.navigate("WelcomeScreen")
             }
           })
-        }
-      } else if (data.status != "201") {
+        } else if (this.state.rememberMe == false) {
+            this.props.navigation.navigate("WelcomeScreen")
+          }
+        } else if (data.status != "201") {
         alert("Something went wrong when adding you to the application");
       }
     })

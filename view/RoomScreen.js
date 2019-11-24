@@ -167,7 +167,20 @@ renderItem = ({ item, index }) => {
 													Alert.alert("Light bulb","17 Day, 1 Hour, 30 mins Estimated time remaining.")
 												}
 												if (buttonIndex == 2) {
-													this.deleteDevice(item._key);
+													Alert.alert(
+															'Are you sure?',
+															"",
+															[
+																{
+																	text: 'Yes',
+																	onPress: () => this.deleteDevice(item._key),
+																},
+																{
+																	text: 'No',
+																},
+															],
+															{cancelable: false},
+														);
 												}
 											}
 											)}>
@@ -222,7 +235,20 @@ renderItem = ({ item, index }) => {
 														this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
 													}
 													if (buttonIndex == 1) {
-														this.deleteDevice(item._key);
+														Alert.alert(
+																'Are you sure?',
+																"",
+																[
+																	{
+																		text: 'Yes',
+																		onPress: () => this.deleteDevice(item._key),
+																	},
+																	{
+																		text: 'No',
+																	},
+																],
+																{cancelable: false},
+															);
 													}
 												}
 												)}>
