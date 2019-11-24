@@ -7,14 +7,6 @@ var BUTTONS = [
 { text: "Philips Glödlampa Standard 25W E27 230V P45", icon: "md-bulb", iconColor: "#c2bc04" },
 { text: "Glödlampa normal 220lm E27 25W", icon: "md-bulb", iconColor: "#c2bc04" },
 { text: "Philips CorePro LEDbulb E27 A60 8W 827 Matt", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Philips Glödlampa Standard 25W E14 230V B35", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Airam Smart LED ljuskälla - opal, 3-stegs dimring", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Noxion Lucent Filament LED Lampa A60 E27 4W 827", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "E14 E14 LED-glödlampor C35T 1W 100LM 2200K", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "E27 LED-glödlampa 4W 470LM 2700K", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Soft Glow LED 1,5W 140lm E27", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "E27 dimbar LED-glödlampa G95 5W 450lm 2700K", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "E28 dimbar LED-glödlampa G99 5W 450lm 3700K", icon: "md-bulb", iconColor: "#c2bc04" },
 { text: "Close", icon: "close", iconColor: "red" }
 ];
 
@@ -108,7 +100,8 @@ addDevice(){
 
 
 render() {
-	let button = <Button disabled style={{marginTop: 25 }} onPress={() => ActionSheet.show({
+	let button =
+  <Button disabled style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 			options: BUTTONS,
 			cancelButtonIndex: CANCEL_INDEX,
 			title: "Light Bubls Range "
@@ -116,10 +109,13 @@ render() {
 			buttonIndex => {
 			this.setState({ clicked: BUTTONS[buttonIndex] });
 		}
-	)}><Icon name="close"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+	)}>
+  <Icon name="close" style={{position: "absolute", right: "86%"}}/>
+  <Text>Category Options</Text></Button>
 
 	if (this.state.itemSelected == 'true') {
-		button = <Button style={{marginTop: 25 }} onPress={() => ActionSheet.show({
+		button =
+    <Button style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 				options: BUTTONS,
 				cancelButtonIndex: CANCEL_INDEX,
 				title: "Light Bubls Range "
@@ -127,7 +123,9 @@ render() {
 				buttonIndex => {
 				this.setState({ clicked: BUTTONS[buttonIndex] });
 				}
-			)}><Icon name="open"/><Text style={{left: -195 }}>Catagory Options</Text></Button>
+			)}>
+      <Icon name="open" style={{position: "absolute", right: "86%"}}/>
+      <Text>Category Options</Text></Button>
 	}
 		return (
 			<Container>
@@ -149,13 +147,13 @@ render() {
 								</ListItem>
 							</List>
 							{button}
-							<Button style={{marginTop: 2, backgroundColor: 'green' }} onPress={() => this.addDevice()}>
-								<Icon name="add"/>
-								<Text style={{left: -255 }}>Add Device</Text>
+							<Button style={{marginTop: 2, backgroundColor: 'green', justifyContent: "center" }} onPress={() => this.addDevice()}>
+								<Icon name="add" style={{position: "absolute", right: "86%"}}/>
+								<Text>Add Device</Text>
 							</Button>
-							<Button style={{marginTop: 2, backgroundColor: '#f55858'}} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
-								<Icon name="close"/>
-								<Text style={{left: -273 }}>Cancel</Text>
+							<Button style={{marginTop: 2, backgroundColor: '#f55858', justifyContent: "center" }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+								<Icon name="close" style={{position: "absolute", right: "86%"}}/>
+								<Text>Cancel</Text>
 							</Button>
 						</Form>
 					</Content>

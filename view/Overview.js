@@ -240,7 +240,20 @@ return (
 												this.props.navigation.navigate("EditNameScreen", {object: "CRUD_r/room", key: this.state.data[index]._key, returnScreen: "OverviewScreen", roomName: this.state.data[index].name})
 											}
 											if (buttonIndex == 1) {
-												this.deleteRoom(item._key, item.name);
+												Alert.alert(
+														'Are you sure?',
+														"",
+														[
+															{
+																text: 'Yes',
+																onPress: () => this.deleteRoom(item._key, item.name),
+															},
+															{
+																text: 'No',
+															},
+														],
+														{cancelable: false},
+													);
 											}
 										}
 										)}>
