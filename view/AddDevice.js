@@ -4,9 +4,9 @@ import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text
 import Slider from 'react-native-slider';
 
 var BUTTONS = [
-{ text: "Philips Glödlampa Standard 25W E27 230V P45", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Glödlampa normal 220lm E27 25W", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Philips CorePro LEDbulb E27 A60 8W 827 Matt", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips lightbulb Standard 750 hours", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Lightbulb normal 500 hours", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips CorePro LEDbulb 1250 hours", icon: "md-bulb", iconColor: "#c2bc04" },
 { text: "Close", icon: "close", iconColor: "red" }
 ];
 
@@ -31,7 +31,9 @@ export default class AddRoom extends Component {
     this.state = {
       name: "",
       pos: parseInt(this.props.navigation.getParam("pos")) + 1,
-      db: require("../dbIp.json")
+      db: require("../dbIp.json"),
+      remainingLight: 0,
+      itemSelected: false,
     }
   }
 
@@ -45,54 +47,107 @@ componentWillUnmount(){
 
 addDevice(){
   if (this.state.name != "") {
-    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
-      method: "POST",
-      headers: {
-     'Accept': 'application/json',
-     'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({
-       _key: (this.state.pos).toString(),
-       name: this.state.name,
-       isLight: this.state.itemSelected,
-       remainingLight: 0,
-       lights: "On",
-       buttonColor: "red",
-       room: this.props.navigation.getParam("name")
-     })
-    })
-    .then((data) => {
-      if (data.status == "201") {
-        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
-          method: "GET",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-          },
+    if (this.state.itemSelected == true) {
+      fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+        method: "POST",
+        headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         _key: (this.state.pos).toString(),
+         name: this.state.name,
+         isLight: this.state.itemSelected,
+         remainingLight: this.state.remainingLight,
+         lights: "On",
+         buttonColor: "red",
+         room: this.props.navigation.getParam("name"),
+         sliderValue: 0
+       })
       })
-        .then((response) => response.json())
-        .then((data) => {
+      .then((data) => {
+        if (data.status == "201") {
           fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
-        		method: "PATCH",
-        		headers: {
-        			'Accept': 'application/json',
-        			'Content-Type': 'application/json',
-        		},
-        		body: JSON.stringify({
-        			devices: data.devices + 1
-        		})
-        	})
-          .then((data) => {
-            if (data.status == "200") {
-              this.props.navigation.navigate("RoomScreenScreen")
-            } else {
-              alert("Something went wrong when creating your device");
-            }
-          })
+            method: "GET",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
         })
-      } else
-      alert("Something went wrong when creating your device");
-    })
+          .then((response) => response.json())
+          .then((data) => {
+            fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+              method: "PATCH",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                devices: data.devices + 1
+              })
+            })
+            .then((data) => {
+              if (data.status == "200") {
+                this.props.navigation.navigate("RoomScreenScreen")
+              } else {
+                alert("Something went wrong when creating your device");
+              }
+            })
+          })
+        } else {
+          alert("Something went wrong when creating your device");
+        }
+      })
+    } else if (this.state.itemSelected == false){
+      fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+        method: "POST",
+        headers: {
+       'Accept': 'application/json',
+       'Content-Type': 'application/json',
+       },
+       body: JSON.stringify({
+         _key: (this.state.pos).toString(),
+         name: this.state.name,
+         isLight: this.state.itemSelected,
+         remainingLight: 0,
+         lights: "On",
+         buttonColor: "red",
+         room: this.props.navigation.getParam("name")
+       })
+      })
+      .then((data) => {
+        if (data.status == "201") {
+          fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+            method: "GET",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+          		method: "PATCH",
+          		headers: {
+          			'Accept': 'application/json',
+          			'Content-Type': 'application/json',
+          		},
+          		body: JSON.stringify({
+          			devices: data.devices + 1
+          		})
+          	})
+            .then((data) => {
+              if (data.status == "200") {
+                this.props.navigation.navigate("RoomScreenScreen")
+              } else {
+                alert("Something went wrong when creating your device");
+              }
+            })
+          })
+        } else
+        alert("Something went wrong when creating your device");
+      })
+    }
   } else if (this.state.name == "") {
     alert("You have not entered a name!");
   }
@@ -107,13 +162,12 @@ render() {
 			title: "Light Bubls Range "
 		},
 			buttonIndex => {
-			this.setState({ clicked: BUTTONS[buttonIndex] });
 		}
 	)}>
   <Icon name="close" style={{position: "absolute", right: "86%"}}/>
   <Text>Category Options</Text></Button>
 
-	if (this.state.itemSelected == 'true') {
+	if (this.state.itemSelected == true) {
 		button =
     <Button style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 				options: BUTTONS,
@@ -121,7 +175,13 @@ render() {
 				title: "Light Bubls Range "
 			},
 				buttonIndex => {
-				this.setState({ clicked: BUTTONS[buttonIndex] });
+          if (buttonIndex == 0) {
+            this.state.remainingLight = 750;
+          } else if (buttonIndex == 1) {
+            this.state.remainingLight = 500;
+          } else if (buttonIndex == 2) {
+            this.state.remainingLight = 1250;
+          }
 				}
 			)}>
       <Icon name="open" style={{position: "absolute", right: "86%"}}/>
@@ -138,11 +198,11 @@ render() {
 							<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
 							<List>
 								<ListItem>
-									<CheckBox onPress={() => (this.setState({itemSelected: 'true' }))} checked={this.state.itemSelected == 'true'}/>
+									<CheckBox onPress={() => (this.setState({itemSelected: true }))} checked={this.state.itemSelected == true}/>
 									<Text style={{left: 10 }}>Lamp Category</Text>
 								</ListItem>
 								<ListItem>
-									<CheckBox onPress={() => (this.setState({itemSelected: 'false' }))} checked={this.state.itemSelected == 'false'}/>
+									<CheckBox onPress={() => (this.setState({itemSelected: false }))} checked={this.state.itemSelected == false}/>
 									<Text style={{left: 10 }}>Other Category</Text>
 								</ListItem>
 							</List>

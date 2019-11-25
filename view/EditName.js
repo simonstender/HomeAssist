@@ -8,9 +8,7 @@ export default class EditName extends Component {
     return {
       title: "Edit name",
       headerLayoutPreset: "center",
-      headerLeft: <TouchableOpacity onPress={() => navigation.navigate("OverviewScreen")}>
-  			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
-  			</TouchableOpacity>,
+      headerLeft: navigation.state.params && navigation.state.params.headerLeft,
       headerRight: null
     };
   };
@@ -30,6 +28,10 @@ export default class EditName extends Component {
 
   componentDidMount(){
     this._isMounted = true;
+    this.props.navigation.setParams({
+      headerLeft: <TouchableOpacity onPress={() => this.props.navigation.navigate(this.state.returnScreen)}>
+  			<Icon style={{ height: 30, width: 64, left: 20 }} name="arrow-back"/>
+  			</TouchableOpacity>})
   }
 
 
