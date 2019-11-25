@@ -24,7 +24,8 @@ constructor(props){
 		data: [],
 		topPos: 0,
 		roomName: this.props.navigation.getParam("name"),
-		db: require("../dbIp.json")
+		db: require("../dbIp.json"),
+		sliderValue: []
 	}
 }
 
@@ -119,6 +120,19 @@ updateDevice(item, status, color){
 	})
 }
 
+updateSlider(value, key){
+	fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device/" + key, {
+		method: "PATCH",
+		headers: {
+			'Accept': 'application/json',
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			sliderValue: value
+		})
+	})
+}
+
 renderItem = ({ item, index }) => {
 	if (this.state.data[index].isLight == true) {
 		var BUTTONS = [
@@ -142,7 +156,7 @@ renderItem = ({ item, index }) => {
 					</Left>
 						<Right>
 							<Text>
-								<Slider style={{alignSelf: "center", width: 120, height: 40}} minimumValue={0} maximumValue={1} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"></Slider>
+								<Slider style={{alignSelf: "center", width: 120, height: 40}} minimumValue={0} maximumValue={10} value={this.state.data[index].sliderValue} onSlidingComplete={(value) => this.updateSlider(value, this.state.data[index]._key)} minimumTrackTintColor="#FFFFFF" maximumTrackTintColor="#000000"></Slider>
 							</Text>
 						</Right>
 				</CardItem>
@@ -164,7 +178,8 @@ renderItem = ({ item, index }) => {
 													this.props.navigation.navigate("EditNameScreen", {object: "CRUD_d/device", key: this.state.data[index]._key, returnScreen: "RoomScreenScreen"})
 												}
 												if (buttonIndex == 1) {
-													Alert.alert("Light bulb","17 Day, 1 Hour, 30 mins Estimated time remaining.")
+													var reply = (this.state.data[index].remainingLight).toString() + " hours of estimated time remaining."
+													alert(reply);
 												}
 												if (buttonIndex == 2) {
 													Alert.alert(
