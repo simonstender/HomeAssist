@@ -72,7 +72,6 @@ export default class Login extends Component {
     } else if (this.state.pw == data.password) {
         this.props.navigation.navigate("WelcomeScreen", {rememberMe: this.state.rememberMe});
     } else {
-        alert(this.state.id)
         alert("Wrong id or password.");
       }
     })
