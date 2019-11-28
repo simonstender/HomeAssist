@@ -175,7 +175,7 @@ rememberMe(){
                   onChangeText={(pw) => this.setState({ pw })}
                   underlineColorAndroid='rgba(0,0,0,0)'
                   placeholder="Password"
-                  secureTextEntry={false}
+                  secureTextEntry={true}
                   placeholderTextColor = "#002f6c"
                   />
                   <View style={styles.checkBox}>
