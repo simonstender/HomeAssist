@@ -29,6 +29,7 @@ componentDidMount(){
   this.identifyUser(DeviceInfo.getUniqueId());
   this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.identifyUser(DeviceInfo.getUniqueId());
+      this.notif.sendNotif();
   });
 }
 
@@ -74,7 +75,6 @@ render() {
 		style={styles.container}>
 		<Text style={styles.text}>Welcome {this.state.name}</Text>
 		<Text style={styles.text}>Swipe left to continue</Text>
-        <Text style={styles.text}>{ this.notif.sendNotif() }</Text>
 		</GestureRecognizer>
 	);
  }
