@@ -80,7 +80,8 @@ render() {
     backgroundColor: "white"
   },
   text: {
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: 20,
   },
   item: {
     flexDirection: "column",

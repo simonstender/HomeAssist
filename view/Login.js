@@ -19,7 +19,8 @@ export default class Login extends Component {
       checked: false,
       rememberMe: false,
       deviceId: DeviceInfo.getUniqueId(),
-      userFound: false
+      userFound: false,
+      firstCheck: false
     }
   }
 
@@ -35,7 +36,19 @@ export default class Login extends Component {
     .then((response) => response.json())
     .then((data) => {
       if (data.rememberMe == true) {
-        this.rememberMe();
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
+          method: "GET",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.errorNum != 400) {
+            this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true, firstCheck: true})
+          }
+        })
       }
     })
   }
@@ -65,6 +78,9 @@ export default class Login extends Component {
   }
 
 rememberMe(){
+  if (this.state.firstCheck == true) {
+    this.setState({id: "Device id", pw: "Password", userFound: false})
+  }
   if (this.state.checked == false) {
     fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
       method: "GET",
@@ -78,19 +94,7 @@ rememberMe(){
       if (data.errorNum == "404") {
         this.setState({checked: true, rememberMe: true})
       } else if (data.rememberMe == true) {
-        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
-          method: "GET",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.errorNum != 400) {
-            this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true})
-          }
-        })
+        this.setState({checked: true, userFound: false})
       } else if (data.rememberMe == false) {
         fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
           method: "PATCH",
@@ -104,19 +108,7 @@ rememberMe(){
         })
         .then((data) => {
           if (data.status == "200") {
-            fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
-              method: "GET",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-              },
-            })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.errorNum != 400) {
-                this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true})
-              }
-            })
+            this.setState({checked: true})
           }
         })
       }
