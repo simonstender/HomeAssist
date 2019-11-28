@@ -3,6 +3,7 @@ import {Platform, StyleSheet, TouchableOpacity, Alert, View, Text, Button} from 
 import DeviceInfo from 'react-native-device-info';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 import {Icon} from 'native-base';
+import Notification from '../src/notifications.js';
 
 export default class Welcome extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -19,6 +20,8 @@ constructor(props){
     db: require("../dbIp.json"),
     rememberMe: this.props.navigation.getParam("rememberMe")
   }
+
+  this.notif = new Notification(this.onNotif.bind(this));
 }
 
 componentDidMount(){
@@ -55,6 +58,10 @@ identifyUser(id){
   })
 }
 
+ onNotif(notif) {
+   Alert.alert(notif.title, notif.message);
+ }
+
 render() {
 	const config = {
 		velocityThreshold: 0.3,
@@ -67,9 +74,10 @@ render() {
 		style={styles.container}>
 		<Text style={styles.text}>Welcome {this.state.name}</Text>
 		<Text style={styles.text}>Swipe left to continue</Text>
+        <Text style={styles.text}>{ this.notif.sendNotif() }</Text>
 		</GestureRecognizer>
 	);
-}
+ }
 }
 
   const styles = StyleSheet.create({
@@ -97,4 +105,13 @@ render() {
     textShadowRadius: 8,
     alignSelf: "center"
   },
-  });
+  button: {
+    borderWidth: 1,
+    borderColor: "#000000",
+    margin: 5,
+    padding: 5,
+    width: "70%",
+    backgroundColor: "#DDDDDD",
+    borderRadius: 5,
+  }
+ });
