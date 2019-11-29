@@ -3,6 +3,8 @@ import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, F
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right, View, Form, Item, Input, Label, Root } from 'native-base';
 import Slider from 'react-native-slider';
 
+import Notification from '../src/notifications.js';
+
 export default class RoomScreen extends Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
@@ -27,6 +29,7 @@ constructor(props){
 		db: require("../dbIp.json"),
 		sliderValue: []
 	}
+	this.notif = new Notification(this.onNotif.bind(this));
 }
 
 componentDidMount(){
@@ -118,6 +121,7 @@ updateDevice(item, status, color){
 			buttonColor: color,
 		})
 	})
+	.then(() => this.notif.sendNotif())
 }
 
 updateSlider(value, key){
@@ -131,6 +135,10 @@ updateSlider(value, key){
 			sliderValue: value
 		})
 	})
+}
+
+onNotif(notif) {
+	Alert.alert(notif.title, notif.message);
 }
 
 renderItem = ({ item, index }) => {
@@ -279,17 +287,18 @@ renderItem = ({ item, index }) => {
 	}
 };
 
-onRefresh = (index) => {this.setState({isFetching: true})
+onRefresh = (index) => {
+	this.setState({isFetching: true})
 	if (typeof index !== "undefined") {
 		if (this.state.data[index].lights == "On") {
 			this.state.data[index].lights = "Off";
-			this.state.data[index].buttonColor = "green";
-			this.updateDevice(this.state.data[index], "Off", "green")
+			this.state.data[index].buttonColor = "red";
+			this.updateDevice(this.state.data[index], "Off", "red")
 		}
 		else if (this.state.data[index].lights == "Off") {
 			this.state.data[index].lights = "On";
-			this.state.data[index].buttonColor = "red";
-			this.updateDevice(this.state.data[index], "On", "red")
+			this.state.data[index].buttonColor = "green";
+			this.updateDevice(this.state.data[index], "On", "green")
 		}
 	}
 	this.setState({isFetching: false})

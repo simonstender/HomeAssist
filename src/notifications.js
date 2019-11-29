@@ -16,28 +16,36 @@ export default class Notification {
 		});
  }
 
-	sendNotif() {
-		fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room", {
-			method: "GET",
-			headers: {
-				'Accept': 'application/json',
-				'Content-Type': 'application/json',
-			},
-		})
-		.then((response) => response.json())
-		.then((data) => {
-			for (var i = 0; i < Object.keys(data).length; i++) {
-				if (data[i].lights == "On") {
-					this.state.data[i] = data[i].name;
-					this.localNotif(this.state.data[i]);
+	sendNotif(localEvent) {
+		if (localEvent == "On") {
+			this.localNotif();
+		} else {
+			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+				method: "GET",
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				},
+			})
+			.then((response) => response.json())
+			.then((data) => {
+				var counter = 0;
+				for (var i = 0; i < Object.keys(data).length; i++) {
+					if (data[i].buttonColor == "green") {
+						counter++;
+						if (counter == Object.keys(data).length) {
+							this.localNotif();
+						}
+					}
 				}
-			}
-		})
+			})
+		}
 	}
 
-	localNotif(data) {
+	localNotif() {
 		PushNotification.localNotification({
-		  title: "Device notification",
+			id: "1",
+		  title: "ELIAS",
 		  autoCancel: true,
 		  largeIcon: "ic_launcher",
 		  smallIcon: "ic_notification",
@@ -45,10 +53,10 @@ export default class Notification {
 		  vibrate: true,
 		  vibration: 300,
 		  ongoing: false,
-		  message: "Device(s) on in the " + data,
+		  message: "All devices are currently on, consider turning some off to conserve electricity",
 		  playSound: true,
 		  soundName: 'default',
-		  actions: '["Solve", "Ignore"]',
+		  actions: '',
  	})
  }
 }

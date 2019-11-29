@@ -48,56 +48,61 @@ componentWillUnmount(){
 addDevice(){
   if (this.state.name != "") {
     if (this.state.itemSelected == true) {
-      fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
-        method: "POST",
-        headers: {
-       'Accept': 'application/json',
-       'Content-Type': 'application/json',
-       },
-       body: JSON.stringify({
-         _key: (this.state.pos).toString(),
-         name: this.state.name,
-         isLight: this.state.itemSelected,
-         remainingLight: this.state.remainingLight,
-         lights: "On",
-         buttonColor: "red",
-         room: this.props.navigation.getParam("name"),
-         sliderValue: 0
-       })
-      })
-      .then((data) => {
-        if (data.status == "201") {
-          fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
-            method: "GET",
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            },
+      if (this.state.remainingLight == 0) {
+        alert("You have not selected a light bulb yet");
+      } else {
+        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+          method: "POST",
+          headers: {
+         'Accept': 'application/json',
+         'Content-Type': 'application/json',
+         },
+         body: JSON.stringify({
+           _key: (this.state.pos).toString(),
+           name: this.state.name,
+           isLight: this.state.itemSelected,
+           remainingLight: this.state.remainingLight,
+           lights: "Off",
+           buttonColor: "red",
+           room: this.props.navigation.getParam("name"),
+           sliderValue: 0,
+           powerUsage: 5
+         })
         })
-          .then((response) => response.json())
-          .then((data) => {
+        .then((data) => {
+          if (data.status == "201") {
             fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
-              method: "PATCH",
+              method: "GET",
               headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                devices: data.devices + 1
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_r/room/" + this.props.navigation.getParam("roomKey"), {
+                method: "PATCH",
+                headers: {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  devices: data.devices + 1
+                })
+              })
+              .then((data) => {
+                if (data.status == "200") {
+                  this.props.navigation.navigate("RoomScreenScreen")
+                } else {
+                  alert("Something went wrong when creating your device");
+                }
               })
             })
-            .then((data) => {
-              if (data.status == "200") {
-                this.props.navigation.navigate("RoomScreenScreen")
-              } else {
-                alert("Something went wrong when creating your device");
-              }
-            })
-          })
-        } else {
-          alert("Something went wrong when creating your device");
-        }
-      })
+          } else {
+            alert("Something went wrong when creating your device");
+          }
+        })
+      }
     } else if (this.state.itemSelected == false){
       fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
         method: "POST",
@@ -110,9 +115,10 @@ addDevice(){
          name: this.state.name,
          isLight: this.state.itemSelected,
          remainingLight: 0,
-         lights: "On",
+         lights: "Off",
          buttonColor: "red",
-         room: this.props.navigation.getParam("name")
+         room: this.props.navigation.getParam("name"),
+         powerUsage: 50
        })
       })
       .then((data) => {
