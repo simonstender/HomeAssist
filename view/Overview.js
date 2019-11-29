@@ -230,7 +230,7 @@ return (
 						<Body>
 							<Right>
 								<Root>
-									<Button transparent iconRight onPress={() => ActionSheet.show({
+									<Button style={{position: "absolute", left: "35%"}} transparent iconRight onPress={() => ActionSheet.show({
 										options: BUTTONS,
 										cancelButtonIndex: CANCEL_INDEX,
 										destructiveButtonIndex: DESTRUCTIVE_INDEX,
@@ -258,7 +258,6 @@ return (
 										}
 										)}>
 										<Icon name='cog' />
-										<Text>Settings</Text>
 									</Button>
 								</Root>
 							</Right>
@@ -343,7 +342,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",
-		backgroundColor: "#efefef"
+		backgroundColor: "white"
 	},
 	item: {
 

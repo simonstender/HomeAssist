@@ -168,7 +168,7 @@ renderItem = ({ item, index }) => {
 							<Body>
 								<Right>
 									<Root>
-										<Button style={{ left: 140 }} transparent iconRight onPress={() => ActionSheet.show({
+										<Button style={{position: "absolute", left: "40%"}} transparent iconRight onPress={() => ActionSheet.show({
 											options: BUTTONS,
 											cancelButtonIndex: CANCEL_INDEX,
 											destructiveButtonIndex: DESTRUCTIVE_INDEX,
@@ -240,7 +240,7 @@ renderItem = ({ item, index }) => {
 								<Body>
 									<Right>
 										<Root>
-											<Button style={{ left: 140 }} transparent iconRight onPress={() => ActionSheet.show({
+											<Button style={{position: "absolute", left: "40%"}} transparent iconRight onPress={() => ActionSheet.show({
 												options: BUTTONS,
 												cancelButtonIndex: CANCEL_INDEX,
 												destructiveButtonIndex: DESTRUCTIVE_INDEX,
@@ -356,9 +356,6 @@ render() {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		//justifyContent: "center",
-		//alignItems: "center",
-		//backgroundColor: "black"
 },
 	text: {
 		textAlign: "center"
