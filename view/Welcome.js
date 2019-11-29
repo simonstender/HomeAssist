@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Left, Body, Right, View, Form, Item, Input, Label, Root, ListItem, CheckBox, List} from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Left, Body, Right, View, Form, Item, Input, Label, Root, ListItem, CheckBox, List, Icon} from 'native-base';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import {Icon} from 'native-base';
 import Notification from '../src/notifications.js';
 
 export default class Welcome extends Component {
@@ -124,7 +123,7 @@ render() {
 						</CardItem>
 					</Card>
 			</Content>
-		<Image style={styles.swipeFinger} source={require('../images/swipeFinger.png')}/>
+		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
 		<Text style={styles.swipeText}>Swipe to continue</Text>
 		</GestureRecognizer>
 	);

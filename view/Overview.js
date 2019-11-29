@@ -333,6 +333,8 @@ render() {
 			onRefresh={() => this.onRefresh()}
 			refreshing={this.state.isFetching}
 		/>
+		<Image style={styles.swipeFinger} source={require('../images/swipeFingerRight.png')}/>
+		<Text style={styles.swipeText}>Swipe to continue</Text>
 		</GestureRecognizer>
 	);
 }
@@ -343,6 +345,17 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		backgroundColor: "white"
+	},
+	swipeFinger: {
+		position: "absolute",
+		bottom: "1.2%",
+		alignSelf: "center",
+		height: 40,
+		width: 40
+	},
+	swipeText: {
+		textAlign: "center",
+		fontSize: 20,
 	},
 	item: {
 
