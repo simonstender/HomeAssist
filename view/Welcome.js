@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right, View, Form, Item, Input, Label, Root, ListItem, CheckBox, List} from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Left, Body, Right, View, Form, Item, Input, Label, Root, ListItem, CheckBox, List} from 'native-base';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import {Icon} from 'native-base';
+import Notification from '../src/notifications.js';
 
 export default class Welcome extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -19,6 +21,8 @@ constructor(props){
     db: require("../dbIp.json"),
     rememberMe: this.props.navigation.getParam("rememberMe")
   }
+
+  this.notif = new Notification(this.onNotif.bind(this));
 }
 
 componentDidMount(){
@@ -26,6 +30,7 @@ componentDidMount(){
   this.identifyUser(DeviceInfo.getUniqueId());
   this.focusListener = this.props.navigation.addListener('didFocus', () => {
       this.identifyUser(DeviceInfo.getUniqueId());
+      this.notif.sendNotif();
   });
 }
 
@@ -54,6 +59,10 @@ identifyUser(id){
     }
   })
 }
+
+ onNotif(notif) {
+   Alert.alert(notif.title, notif.message);
+ }
 
 render() {
 	const config = {
@@ -119,7 +128,7 @@ render() {
 		<Text style={styles.swipeText}>Swipe to continue</Text>
 		</GestureRecognizer>
 	);
-}
+ }
 }
 
 const styles = StyleSheet.create({
