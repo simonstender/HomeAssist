@@ -54,7 +54,7 @@ addRoom(){
 				body: JSON.stringify({
 					_key: (this.state.pos).toString(),
 					name: this.state.name,
-					lights: "On",
+					lights: "Off",
 					buttonColor: "red",
 					allLights: "Hold",
 					devices: 0,

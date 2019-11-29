@@ -19,42 +19,48 @@ export default class Login extends Component {
       checked: false,
       rememberMe: false,
       deviceId: DeviceInfo.getUniqueId(),
-      userFound: false,
-      firstCheck: false
+      userFound: false
     }
   }
 
   componentDidMount(){
     this._isMounted = true;
-    fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
-      method: "GET",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-    })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.rememberMe == true) {
-        fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
-          method: "GET",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-        })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.errorNum != 400) {
-            this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true, firstCheck: true})
-          }
-        })
-      }
-    })
+    this.focusListener = this.props.navigation.addListener('didFocus', () => {
+      fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
+        method: "GET",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.rememberMe == true) {
+          fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_b/login/", {
+            method: "GET",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            },
+          })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.errorNum != 400) {
+                if (this.props.navigation.getParam("logout") == true) {
+                  this.setState({id: data[0]._key, pw: data[0].password, checked: true, userFound: true})
+                } else {
+                  this.props.navigation.navigate("WelcomeScreen");
+                }
+            }
+          })
+        }
+      })
+    });
   }
 
   componentWillUnmount(){
     this._isMounted = false;
+    this.focusListener.remove();
   }
 
   checkLogin() {
@@ -78,9 +84,6 @@ export default class Login extends Component {
   }
 
 rememberMe(){
-  if (this.state.firstCheck == true) {
-    this.setState({id: "Device id", pw: "Password", userFound: false})
-  }
   if (this.state.checked == false) {
     fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_u/user/" + this.state.deviceId, {
       method: "GET",
@@ -187,7 +190,7 @@ rememberMe(){
                   <Text style={{right: 30, color: "white"}}>Connect to device</Text></Button>
           </ImageBackground>
       );
-    } else if (this.state.checked == false ) {
+    } else if (this.state.checked == false) {
       return (
           <ImageBackground source={require("../images/loginBackground.jpg")} style={styles.container}>
             <Image source={require("../images/logo.png")} style={styles.image}></Image>
@@ -203,7 +206,7 @@ rememberMe(){
                   onChangeText={(pw) => this.setState({ pw })}
                   underlineColorAndroid='rgba(0,0,0,0)'
                   placeholder="Password"
-                  secureTextEntry={false}
+                  secureTextEntry={true}
                   placeholderTextColor = "#002f6c"
                   />
                   <View style={styles.checkBox}>

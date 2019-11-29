@@ -20,7 +20,7 @@ const AppStackNavigator = createStackNavigator({
   AddDeviceScreen: AddDevice,
   WelcomeScreen: Welcome,
   AddUserScreen: AddUser,
-  EditNameScreen: EditName
+  EditNameScreen: EditName,
 },
 {
   defaultNavigationOptions: {
