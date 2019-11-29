@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, TouchableOpacity, Alert, View, Text, Button} from 'react-native';
+import {Platform, StyleSheet, TouchableOpacity, Alert, Image} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Left, Body, Right, View, Form, Item, Input, Label, Root, ListItem, CheckBox, List, Icon} from 'native-base';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
-import {Icon} from 'native-base';
 import Notification from '../src/notifications.js';
 
 export default class Welcome extends Component {
@@ -73,45 +73,102 @@ render() {
 		onSwipeLeft={() => this.onSwipeLeft()}
 		config={config}
 		style={styles.container}>
-		<Text style={styles.text}>Welcome {this.state.name}</Text>
-		<Text style={styles.text}>Swipe left to continue</Text>
+		<Icon style={styles.icon} name= "ios-log-out"/>
+		<Text style={styles.title}>Welcome {this.state.name}</Text>
+		<Content padder>
+			<Card>
+				<CardItem>
+					<Thumbnail source={require("../images/energy.png")} />
+						<Body>
+							<Text style={{left: 8, top: 12}}>Energy Consumption:</Text>
+						</Body>
+						<Right>
+							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
+							name='information-circle-outline'
+							onPress={() => Alert.alert("Information", "An overview of the electricity consumption.")}/>
+						</Right>
+				</CardItem>
+					<CardItem style={{backgroundColor: '#EFEFF0'}}>
+					<List>
+						<ListItem style={{position: "relative", right: "40%"}}>
+							<Text style={styles.text}>CALCULATION ITEM</Text>
+						</ListItem>
+						<ListItem style={{position: "relative", right: "40%" }}>
+							<Text style={styles.text}>CALCULATION ITEM</Text>
+						</ListItem>
+					</List>
+					</CardItem>
+				</Card>
+				<Card>
+					<CardItem>
+						<Thumbnail source={require("../images/bulb.png")} />
+							<Body>
+								<Text style={{left: 8, top: 12}}>Light observation:</Text>
+							</Body>
+							<Right>
+								<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%"}}
+								name='information-circle-outline'
+								onPress={() => Alert.alert("Information", "An indication of the light bulb's remaining service life")}/>
+							</Right>
+					</CardItem>
+						<CardItem style={{backgroundColor: '#EFEFF0'}}>
+						<List>
+							<ListItem style={{position: "relative", right: "40%"}}>
+								<Text style={styles.text}>LAMP DEVICE ITEM</Text>
+							</ListItem>
+							<ListItem style={{position: "relative", right: "40%"}}>
+								<Text style={styles.text}>LAMP DEVICE ITEM</Text>
+							</ListItem>
+						</List>
+						</CardItem>
+					</Card>
+			</Content>
+		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
+		<Text style={styles.swipeText}>Swipe to continue</Text>
 		</GestureRecognizer>
 	);
  }
 }
 
-  const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white"
-  },
-  text: {
-    textAlign: "center",
-    fontSize: 20,
-  },
-  item: {
-    flexDirection: "column",
-    justifyContent: "space-between",
-    backgroundColor: '#696969',
-    padding: 8,
-    marginVertical: 8,
-    marginHorizontal: 16,
-  },
-  title: {
-    fontSize: 24,
-    textShadowColor: "white",
-    textShadowRadius: 8,
-    alignSelf: "center"
-  },
-  button: {
-    borderWidth: 1,
-    borderColor: "#000000",
-    margin: 5,
-    padding: 5,
-    width: "70%",
-    backgroundColor: "#DDDDDD",
-    borderRadius: 5,
-  }
- });
+const styles = StyleSheet.create({
+	container: {
+		flex: 1,
+		backgroundColor: "white"
+	},
+	icon: {
+		marginTop:14,
+		fontSize: 38,
+		position:"absolute",
+		left: "88%",
+		color: "#f55858"
+	},
+	text: {
+		fontSize: 14,
+	},
+	swipeFinger: {
+		position: "absolute",
+		bottom: "1.2%",
+		alignSelf: "center",
+		height: 40,
+		width: 40
+	},
+	swipeText: {
+		textAlign: "center",
+		fontSize: 20,
+	},
+	item: {
+		flexDirection: "column",
+		justifyContent: "space-between",
+		backgroundColor: '#696969',
+		padding: 8,
+		marginVertical: 8,
+		marginHorizontal: 16,
+	},
+	title: {
+		marginTop:20,
+		fontSize: 20,
+		textShadowColor: "#EFEFF0",
+		textShadowRadius: 8,
+		alignSelf: "center"
+	},
+});

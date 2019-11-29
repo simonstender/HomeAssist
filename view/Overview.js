@@ -230,7 +230,7 @@ return (
 						<Body>
 							<Right>
 								<Root>
-									<Button transparent iconRight onPress={() => ActionSheet.show({
+									<Button style={{position: "absolute", left: "35%"}} transparent iconRight onPress={() => ActionSheet.show({
 										options: BUTTONS,
 										cancelButtonIndex: CANCEL_INDEX,
 										destructiveButtonIndex: DESTRUCTIVE_INDEX,
@@ -258,7 +258,6 @@ return (
 										}
 										)}>
 										<Icon name='cog' />
-										<Text>Settings</Text>
 									</Button>
 								</Root>
 							</Right>
@@ -334,6 +333,8 @@ render() {
 			onRefresh={() => this.onRefresh()}
 			refreshing={this.state.isFetching}
 		/>
+		<Image style={styles.swipeFinger} source={require('../images/swipeFingerRight.png')}/>
+		<Text style={styles.swipeText}>Swipe to continue</Text>
 		</GestureRecognizer>
 	);
 }
@@ -343,7 +344,18 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		justifyContent: "center",
-		backgroundColor: "#efefef"
+		backgroundColor: "white"
+	},
+	swipeFinger: {
+		position: "absolute",
+		bottom: "1.2%",
+		alignSelf: "center",
+		height: 40,
+		width: 40
+	},
+	swipeText: {
+		textAlign: "center",
+		fontSize: 20,
 	},
 	item: {
 
