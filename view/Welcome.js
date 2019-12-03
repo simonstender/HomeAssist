@@ -21,7 +21,7 @@ constructor(props){
     db: require("../dbIp.json"),
     rememberMe: this.props.navigation.getParam("rememberMe"),
     totalEnergyConsumption: 0,
-    totalDevicesOnline: 0,
+    totalActiveDevices: 0,
     isFetching: false,
     lowRemainingLightData: [{name: "", room: ""}],
   }
@@ -53,14 +53,18 @@ energyConsumptionAndLightBulb(){
   .then((response) => response.json())
   .then((data) => {
     var numberOfDevices = 0;
+    var activeDevices = 0;
     this.state.totalEnergyConsumption = 0;
-    this.state.totalDevicesOnline = Object.keys(data).length;
     for (var i = 0; i < Object.keys(data).length; i++) {
-      this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage
+      this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage;
+      if (data[i].lights == "On") {
+          activeDevices++;
+      }
       if (data[i].remainingLight > 0 && data[i].remainingLight <= 500) {
         this.state.lowRemainingLightData[numberOfDevices++] = data[i];
       }
     }
+    this.state.totalActiveDevices = activeDevices; 
     this.forceUpdate();
   })
 }
@@ -134,7 +138,7 @@ render() {
 					<CardItem style={{backgroundColor: '#EFEFF0'}}>
 					<List>
 						<ListItem style={{right: "40%"}}>
-							<Text style={styles.text}>{this.state.totalEnergyConsumption} kWh ({this.state.totalDevicesOnline} devices active)</Text>
+							<Text style={styles.text}>{this.state.totalEnergyConsumption} kWh ({this.state.totalActiveDevices} devices active)</Text>
 						</ListItem>
 					</List>
 					</CardItem>
