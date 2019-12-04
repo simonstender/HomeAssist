@@ -59,8 +59,8 @@ export default class Login extends Component {
   }
 
   componentWillUnmount(){
-    this._isMounted = false;
     this.focusListener.remove();
+    this._isMounted = false;
   }
 
   checkLogin() {

@@ -4,9 +4,9 @@ import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text
 import Slider from 'react-native-slider';
 
 var BUTTONS = [
-{ text: "Philips lightbulb Standard 750 hours", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Lightbulb normal 500 hours", icon: "md-bulb", iconColor: "#c2bc04" },
-{ text: "Philips CorePro LEDbulb 1250 hours", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips light bulb Standard 750 hours", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Light bulb normal 500 hours", icon: "md-bulb", iconColor: "#c2bc04" },
+{ text: "Philips CorePro LED bulb 1250 hours", icon: "md-bulb", iconColor: "#c2bc04" },
 { text: "Close", icon: "close", iconColor: "red" }
 ];
 
@@ -165,7 +165,7 @@ render() {
   <Button disabled style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 			options: BUTTONS,
 			cancelButtonIndex: CANCEL_INDEX,
-			title: "Light Bubls Range "
+			title: "Light Bulbs Range"
 		},
 			buttonIndex => {
 		}
@@ -178,15 +178,15 @@ render() {
     <Button style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 				options: BUTTONS,
 				cancelButtonIndex: CANCEL_INDEX,
-				title: "Light Bubls Range "
+				title: "Light Bulbs Range"
 			},
 				buttonIndex => {
           if (buttonIndex == 0) {
-            this.state.remainingLight = 750;
+            this.state.remainingLight = (Math.floor(Math.random() * 200)+550).toString();
           } else if (buttonIndex == 1) {
-            this.state.remainingLight = 500;
+            this.state.remainingLight = (Math.floor(Math.random() * 200)+300).toString();
           } else if (buttonIndex == 2) {
-            this.state.remainingLight = 1250;
+            this.state.remainingLight = (Math.floor(Math.random() * 200)+1050).toString();
           }
 				}
 			)}>
