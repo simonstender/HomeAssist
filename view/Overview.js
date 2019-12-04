@@ -137,8 +137,8 @@ updateRooms(){
 }
 
 componentWillUnmount(){
-	this._isMounted = false;
 	this.focusListener.remove();
+	this._isMounted = false;
 }
 
 updateRoom(item, status, color, allLights){
@@ -199,26 +199,26 @@ onNotif(notif) {
 
 
 onRefresh = (index) => {
-	if (this.state.data[index].devices >= 1) {
-		this.setState({isFetching: true})
-			if (typeof index !== "undefined") {
-				if (this.state.data[index].lights == "On") {
-					this.state.data[index].lights = "Off";
-					this.state.data[index].buttonColor = "red";
-					this.updateRoom(this.state.data[index], "Off", "red", "Off")
-				}
-				else if (this.state.data[index].lights == "Off") {
-					this.state.data[index].lights = "On";
-					this.state.data[index].buttonColor = "green";
-					this.updateRoom(this.state.data[index], "On", "green", "On")
-				}
-			}
-			setTimeout(() => {
-				this.notif.sendNotif();
-			}, 750)
-		this.setState({isFetching: false})
-	} else {
-		alert("No devices connected to this room")
+	if (typeof index !== "undefined") {
+		if (this.state.data[index].devices >= 1) {
+			this.setState({isFetching: true})
+					if (this.state.data[index].lights == "On") {
+						this.state.data[index].lights = "Off";
+						this.state.data[index].buttonColor = "red";
+						this.updateRoom(this.state.data[index], "Off", "red", "Off")
+					}
+					else if (this.state.data[index].lights == "Off") {
+						this.state.data[index].lights = "On";
+						this.state.data[index].buttonColor = "green";
+						this.updateRoom(this.state.data[index], "On", "green", "On")
+					}
+				setTimeout(() => {
+					this.notif.sendNotif();
+				}, 750)
+			this.setState({isFetching: false})
+		} else {
+			alert("No devices connected to this room")
+		}
 	}
 }
 

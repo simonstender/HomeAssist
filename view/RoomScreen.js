@@ -91,8 +91,8 @@ insertion_Sort(data){
 }
 
 componentWillUnmount(){
-	this._isMounted = false;
 	this.focusListener.remove();
+	this._isMounted = false;
 }
 
 updateDevices(){

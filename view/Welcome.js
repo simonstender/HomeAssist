@@ -21,9 +21,10 @@ constructor(props){
     db: require("../dbIp.json"),
     rememberMe: this.props.navigation.getParam("rememberMe"),
     totalEnergyConsumption: 0,
-    totalDevicesOnline: 0,
+    totalActiveDevices: 0,
     isFetching: false,
-    lowRemainingLightData: [{name: "", room: ""}],
+    lowRemainingLightData: [{name: "No light bulb needs to be changed", room: ""}],
+    doneLoading: false,
   }
   this.notif = new Notification(this.onNotif.bind(this));
 }
@@ -38,8 +39,8 @@ componentDidMount(){
 }
 
 componentWillUnmount(){
-  this._isMounted = false;
 	this.focusListener.remove();
+  this._isMounted = false;
 }
 
 energyConsumptionAndLightBulb(){
@@ -53,16 +54,45 @@ energyConsumptionAndLightBulb(){
   .then((response) => response.json())
   .then((data) => {
     var numberOfDevices = 0;
+    var activeDevices = 0;
     this.state.totalEnergyConsumption = 0;
-    this.state.totalDevicesOnline = Object.keys(data).length;
     for (var i = 0; i < Object.keys(data).length; i++) {
-      this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage
+      this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage;
+      if (data[i].lights == "On") {
+          activeDevices++;
+      }
       if (data[i].remainingLight > 0 && data[i].remainingLight <= 500) {
         this.state.lowRemainingLightData[numberOfDevices++] = data[i];
       }
     }
+    this.state.totalActiveDevices = activeDevices;
+    this.insertion_Sort(this.state.lowRemainingLightData)
+    this.state.doneLoading = true;
     this.forceUpdate();
   })
+}
+
+insertion_Sort(data)
+{
+  for (var i = 1; i < data.length; i++)
+  {
+    if (data[i].remainingLight < data[0].remainingLight)
+    {
+      data.unshift(data.splice(i,1)[0]);
+    }
+    else if (data[i].remainingLight > data[i-1].remainingLight)
+    {
+      continue;
+    }
+    else {
+      for (var j = 1; j < i; j++) {
+        if (data[i].remainingLight > data[j-1].remainingLight && data[i].remainingLight < data[j].remainingLight)
+        {
+          data.splice(j,0,data.splice(i,1)[0]);
+        }
+      }
+    }
+  }
 }
 
 onSwipeLeft() {
@@ -111,71 +141,172 @@ render() {
 		velocityThreshold: 0.3,
 		directionalOffsetThreshold: 80
 	};
-	return (
-		<GestureRecognizer
-		onSwipeLeft={() => this.onSwipeLeft()}
-		config={config}
-		style={styles.container}>
-		<Icon onPress={() => this.props.navigation.navigate("LoginScreen", {logout: true})} style={styles.icon} name= "ios-log-out"/>
-		<Text style={styles.title}>Welcome {this.state.name}</Text>
-		<Content padder>
-			<Card>
-				<CardItem>
-					<Thumbnail source={require("../images/energy.png")} />
-						<Body>
-							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
-						</Body>
-						<Right>
-							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
-							name='information-circle-outline'
-							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
-						</Right>
-				</CardItem>
-					<CardItem style={{backgroundColor: '#EFEFF0'}}>
-					<List>
-						<ListItem style={{right: "40%"}}>
-							<Text style={styles.text}>{this.state.totalEnergyConsumption} kWh ({this.state.totalDevicesOnline} devices active)</Text>
-						</ListItem>
-					</List>
-					</CardItem>
-				</Card>
-				<Card>
-					<CardItem>
-						<Thumbnail source={require("../images/bulb.png")} />
-							<Body>
-								<Text style={{left: 8, top: 12}}>Light Bulb Expectancy</Text>
-							</Body>
-							<Right>
-								<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%"}}
-								name='information-circle-outline'
-								onPress={() => Alert.alert("Information", "List of light bulbs which needs to be replaced soon")}/>
-							</Right>
-					</CardItem>
-						<CardItem style={{backgroundColor: '#EFEFF0'}}>
-              <List>
-  							<ListItem style={{position: "relative", right: "40%"}}>
-  								<Text style={styles.text}>{this.state.lowRemainingLightData[0].name}({this.state.lowRemainingLightData[0].room})</Text>
-  							</ListItem>
-  						</List>
-						</CardItem>
-					</Card>
-			</Content>
-		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
-		<Text style={styles.swipeText}>Swipe to continue</Text>
-		</GestureRecognizer>
-	);
+	if (this.state.doneLoading == false) {
+    return (
+  		<GestureRecognizer
+  		onSwipeLeft={() => this.onSwipeLeft()}
+  		config={config}
+  		style={styles.container}>
+  		<Icon onPress={() => this.props.navigation.navigate("LoginScreen", {logout: true})} style={styles.icon} name= "ios-log-out"/>
+  		<Text style={styles.title}>Welcome {this.state.name}</Text>
+  		<Content padder>
+  			<Card>
+  				<CardItem>
+  					<Thumbnail source={require("../images/energy.png")} />
+  						<Body>
+  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  						</Body>
+  						<Right>
+  							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
+  							name='information-circle-outline'
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  						</Right>
+  				</CardItem>
+  					<CardItem style={{backgroundColor: '#EFEFF0'}}>
+  					<List>
+  						<ListItem style={{right: "40%"}}>
+  							<ActivityIndicator size="small" color="black" />
+  						</ListItem>
+  					</List>
+  					</CardItem>
+  				</Card>
+  				<Card>
+  					<CardItem>
+  						<Thumbnail source={require("../images/bulb.png")} />
+  							<Body>
+  								<Text style={{left: 8, top: 12}}>Light Bulb Expectancy</Text>
+  							</Body>
+  							<Right>
+  								<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%"}}
+  								name='information-circle-outline'
+  								onPress={() => Alert.alert("Information", "Light bulb which needs to be replaced soon")}/>
+  							</Right>
+  					</CardItem>
+  						<CardItem style={{backgroundColor: '#EFEFF0'}}>
+                <List>
+    							<ListItem style={{position: "relative", right: "40%"}}>
+    								<ActivityIndicator size="small" color="black" />
+    							</ListItem>
+    						</List>
+  						</CardItem>
+  					</Card>
+  			</Content>
+  		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
+  		<Text style={styles.swipeText}>Swipe to continue</Text>
+  		</GestureRecognizer>
+  	);
+  } else if (this.state.lowRemainingLightData[0].name == "No light bulb needs to be changed"){
+    return (
+  		<GestureRecognizer
+  		onSwipeLeft={() => this.onSwipeLeft()}
+  		config={config}
+  		style={styles.container}>
+  		<Icon onPress={() => this.props.navigation.navigate("LoginScreen", {logout: true})} style={styles.icon} name= "ios-log-out"/>
+  		<Text style={styles.title}>Welcome {this.state.name}</Text>
+  		<Content padder>
+  			<Card>
+  				<CardItem>
+  					<Thumbnail source={require("../images/energy.png")} />
+  						<Body>
+  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  						</Body>
+  						<Right>
+  							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
+  							name='information-circle-outline'
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  						</Right>
+  				</CardItem>
+  					<CardItem style={{backgroundColor: '#EFEFF0'}}>
+  					<List>
+  						<ListItem style={{right: "40%"}}>
+  							<Text style={styles.text}>{this.state.totalEnergyConsumption} kWh ({this.state.totalActiveDevices} devices active)</Text>
+  						</ListItem>
+  					</List>
+  					</CardItem>
+  				</Card>
+  				<Card>
+  					<CardItem>
+  						<Thumbnail source={require("../images/bulb.png")} />
+  							<Body>
+  								<Text style={{left: 8, top: 12}}>Light Bulb Expectancy</Text>
+  							</Body>
+  							<Right>
+  								<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%"}}
+  								name='information-circle-outline'
+  								onPress={() => Alert.alert("Information", "Light bulb which needs to be replaced soon")}/>
+  							</Right>
+  					</CardItem>
+  						<CardItem style={{backgroundColor: '#EFEFF0'}}>
+                <List>
+    							<ListItem style={{position: "relative", right: "40%"}}>
+    								<Text style={styles.text}>{this.state.lowRemainingLightData[0].name}</Text>
+    							</ListItem>
+    						</List>
+  						</CardItem>
+  					</Card>
+  			</Content>
+  		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
+  		<Text style={styles.swipeText}>Swipe to continue</Text>
+  		</GestureRecognizer>
+  	);
+  } else {
+    return (
+  		<GestureRecognizer
+  		onSwipeLeft={() => this.onSwipeLeft()}
+  		config={config}
+  		style={styles.container}>
+  		<Icon onPress={() => this.props.navigation.navigate("LoginScreen", {logout: true})} style={styles.icon} name= "ios-log-out"/>
+  		<Text style={styles.title}>Welcome {this.state.name}</Text>
+  		<Content padder>
+  			<Card>
+  				<CardItem>
+  					<Thumbnail source={require("../images/energy.png")} />
+  						<Body>
+  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  						</Body>
+  						<Right>
+  							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
+  							name='information-circle-outline'
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  						</Right>
+  				</CardItem>
+  					<CardItem style={{backgroundColor: '#EFEFF0'}}>
+  					<List>
+  						<ListItem style={{right: "40%"}}>
+  							<Text style={styles.text}>{this.state.totalEnergyConsumption} kWh ({this.state.totalActiveDevices} devices active)</Text>
+  						</ListItem>
+  					</List>
+  					</CardItem>
+  				</Card>
+  				<Card>
+  					<CardItem>
+  						<Thumbnail source={require("../images/bulb.png")} />
+  							<Body>
+  								<Text style={{left: 8, top: 12}}>Light Bulb Expectancy</Text>
+  							</Body>
+  							<Right>
+  								<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%"}}
+  								name='information-circle-outline'
+  								onPress={() => Alert.alert("Information", "Light bulb which needs to be replaced soon")}/>
+  							</Right>
+  					</CardItem>
+  						<CardItem style={{backgroundColor: '#EFEFF0'}}>
+                <List>
+    							<ListItem style={{position: "relative", right: "40%"}}>
+    								<Text style={styles.text}>{this.state.lowRemainingLightData[0].name}({this.state.lowRemainingLightData[0].room})</Text>
+    							</ListItem>
+    						</List>
+  						</CardItem>
+  					</Card>
+  			</Content>
+  		<Image style={styles.swipeFinger} source={require('../images/swipeFingerLeft.png')}/>
+  		<Text style={styles.swipeText}>Swipe to continue</Text>
+  		</GestureRecognizer>
+  	);
+  }
  }
 }
-/*
-<FlatList
-data={this.state.lowRemainingLightData}
-renderItem={this.renderItem}
-keyExtractor={item => item._key}
-onRefresh={() => this.onRefresh()}
-refreshing={this.state.isFetching}
-/>
-*/
-//position: "relative", right: "40%"
+
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,

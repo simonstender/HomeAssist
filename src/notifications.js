@@ -29,14 +29,14 @@ export default class Notification {
 			})
 			.then((response) => response.json())
 			.then((data) => {
-				var counter = 0;
+				var numberOfRooms = 0;
 				for (var i = 0; i < Object.keys(data).length; i++) {
-					if (data[i].buttonColor == "green") {
-						counter++;
-						if (counter == Object.keys(data).length) {
-							this.localNotif();
-						}
+					if (data[i].lights == "On") {
+						numberOfRooms++;
 					}
+				}
+				if (Object.keys(data).length == numberOfRooms) {
+					this.localNotif();
 				}
 			})
 		}
@@ -44,7 +44,7 @@ export default class Notification {
 
 	localNotif() {
 		PushNotification.localNotification({
-			id: "1",
+		  id: "1",
 		  title: "ELIAS",
 		  autoCancel: true,
 		  largeIcon: "ic_launcher",
