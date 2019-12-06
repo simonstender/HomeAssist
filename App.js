@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Root } from 'native-base';
 import { TouchableOpacity, Image, AppRegistry, StyleSheet, Text, View } from 'react-native';
 import {createAppContainer} from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';

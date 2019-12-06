@@ -10,12 +10,12 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "core-js": "^3.4.0",
+    "core-js": "^3.4.7",
     "native-base": "^2.13.8",
-    "react": "16.9.0",
-    "react-native": "0.61.4",
-    "react-native-device-info": "^5.3.0",
-    "react-native-gesture-handler": "^1.5.0",
+    "react": "16.12.0",
+    "react-native": "0.61.5",
+    "react-native-device-info": "^5.3.1",
+    "react-native-gesture-handler": "^1.5.2",
     "react-native-push-notification": "^3.1.9",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "1.0.0-alpha.23",
@@ -27,14 +27,14 @@
     "react-navigation-stack": "^1.10.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/runtime": "^7.7.2",
+    "@babel/core": "^7.7.5",
+    "@babel/runtime": "^7.7.5",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
-    "eslint": "^6.6.0",
+    "eslint": "^6.7.2",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.57.0",
-    "react-test-renderer": "16.9.0"
+    "react-test-renderer": "16.12.0"
   },
   "jest": {
     "preset": "react-native"

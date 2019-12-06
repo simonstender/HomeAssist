@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, TouchableOpacity} from 'react-native';
-import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox } from 'native-base';
+import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View, Form, Item, Input, Label, List, ListItem, CheckBox, Root } from 'native-base';
 import Slider from 'react-native-slider';
 
 var BUTTONS = [
@@ -34,15 +34,16 @@ export default class AddRoom extends Component {
       db: require("../dbIp.json"),
       remainingLight: 0,
       itemSelected: false,
+      button: null,
     }
   }
 
 componentDidMount(){
-	this._isMounted = true;
-}
+  this._isMounted = true;
+  }
 
 componentWillUnmount(){
-	this._isMounted = false;
+  this._isMounted = false;
 }
 
 addDevice(){
@@ -161,7 +162,7 @@ addDevice(){
 
 
 render() {
-	let button =
+	this.state.button =
   <Button disabled style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 			options: BUTTONS,
 			cancelButtonIndex: CANCEL_INDEX,
@@ -174,7 +175,7 @@ render() {
   <Text>Category Options</Text></Button>
 
 	if (this.state.itemSelected == true) {
-		button =
+		this.state.button =
     <Button style={{marginTop: 25, justifyContent: "center" }} onPress={() => ActionSheet.show({
 				options: BUTTONS,
 				cancelButtonIndex: CANCEL_INDEX,
@@ -193,39 +194,41 @@ render() {
       <Icon name="open" style={{position: "absolute", right: "86%"}}/>
       <Text>Category Options</Text></Button>
 	}
-		return (
-			<Container>
-					<Content padder>
-						<Form>
-							<Item floatingLabel>
-								<Label>Device name</Label>
-								<Input onChangeText={(name) => this.setState({ name })}/>
-							</Item>
-							<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
-							<List>
-								<ListItem>
-									<CheckBox onPress={() => (this.setState({itemSelected: true }))} checked={this.state.itemSelected == true}/>
-									<Text style={{left: 10 }}>Lamp Category</Text>
-								</ListItem>
-								<ListItem>
-									<CheckBox onPress={() => (this.setState({itemSelected: false }))} checked={this.state.itemSelected == false}/>
-									<Text style={{left: 10 }}>Other Category</Text>
-								</ListItem>
-							</List>
-							{button}
-							<Button style={{marginTop: 2, backgroundColor: 'green', justifyContent: "center" }} onPress={() => this.addDevice()}>
-								<Icon name="add" style={{position: "absolute", right: "86%"}}/>
-								<Text>Add Device</Text>
-							</Button>
-							<Button style={{marginTop: 2, backgroundColor: '#f55858', justifyContent: "center" }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
-								<Icon name="close" style={{position: "absolute", right: "86%"}}/>
-								<Text>Cancel</Text>
-							</Button>
-						</Form>
-					</Content>
-			</Container>
-			);
-}
+	return (
+    <Root>
+  		<Container>
+  				<Content padder>
+  					<Form>
+  						<Item floatingLabel>
+  							<Label>Device name</Label>
+  							<Input onChangeText={(name) => this.setState({ name })}/>
+  						</Item>
+  						<Text style={{left: 15, marginTop: 40  }}>Device Category</Text>
+  						<List>
+  							<ListItem>
+  								<CheckBox onPress={() => (this.setState({itemSelected: true }))} checked={this.state.itemSelected == true}/>
+  								<Text style={{left: 10 }}>Lamp Category</Text>
+  							</ListItem>
+  							<ListItem>
+  								<CheckBox onPress={() => (this.setState({itemSelected: false }))} checked={this.state.itemSelected == false}/>
+  								<Text style={{left: 10 }}>Other Category</Text>
+  							</ListItem>
+  						</List>
+  						{this.state.button}
+  						<Button style={{marginTop: 2, backgroundColor: 'green', justifyContent: "center" }} onPress={() => this.addDevice()}>
+  							<Icon name="add" style={{position: "absolute", right: "86%"}}/>
+  							<Text>Add Device</Text>
+  						</Button>
+  						<Button style={{marginTop: 2, backgroundColor: '#f55858', justifyContent: "center" }} onPress={() => this.props.navigation.navigate("RoomScreenScreen")}>
+  							<Icon name="close" style={{position: "absolute", right: "86%"}}/>
+  							<Text>Cancel</Text>
+  						</Button>
+  					</Form>
+  				</Content>
+  		</Container>
+    </Root>
+		);
+  }
 }
 
 const styles = StyleSheet.create({
