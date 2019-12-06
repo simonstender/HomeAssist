@@ -17,29 +17,25 @@ export default class Notification {
  }
 
 	sendNotif(localEvent) {
-		if (localEvent == "On") {
-			this.localNotif();
-		} else {
-			fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
-				method: "GET",
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json',
-				},
-			})
-			.then((response) => response.json())
-			.then((data) => {
-				var numberOfRooms = 0;
-				for (var i = 0; i < Object.keys(data).length; i++) {
-					if (data[i].lights == "On") {
-						numberOfRooms++;
-					}
+		fetch("http://" + this.state.db.ip + "/_db/HomeAssist/CRUD_d/device", {
+			method: "GET",
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json',
+			},
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			var numberOfRooms = 0;
+			for (var i = 0; i < Object.keys(data).length; i++) {
+				if (data[i].lights == "On") {
+					numberOfRooms++;
 				}
-				if (Object.keys(data).length == numberOfRooms) {
-					this.localNotif();
-				}
-			})
-		}
+			}
+			if (Object.keys(data).length == numberOfRooms) {
+				this.localNotif();
+			}
+		})
 	}
 
 	localNotif() {

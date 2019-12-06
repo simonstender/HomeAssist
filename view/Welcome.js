@@ -57,11 +57,11 @@ energyConsumptionAndLightBulb(){
     var activeDevices = 0;
     this.state.totalEnergyConsumption = 0;
     for (var i = 0; i < Object.keys(data).length; i++) {
-      this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage;
       if (data[i].lights == "On") {
+          this.state.totalEnergyConsumption = this.state.totalEnergyConsumption + data[i].powerUsage;
           activeDevices++;
       }
-      if (data[i].remainingLight > 0 && data[i].remainingLight <= 500) {
+      if (data[i].remainingLight > 0) {
         this.state.lowRemainingLightData[numberOfDevices++] = data[i];
       }
     }
@@ -159,7 +159,7 @@ render() {
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>
@@ -213,7 +213,7 @@ render() {
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>
@@ -267,7 +267,7 @@ render() {
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>

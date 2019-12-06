@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Root} from 'native-base'
-import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList, AsyncStorage} from 'react-native';
+import {Platform, StyleSheet, Alert, ImageBackground, TouchableOpacity, Image, FlatList, ActivityIndicatorActivityIndicator} from 'react-native';
 import {Container, Header, Content, Card, CardItem, Thumbnail, ActionSheet, Text, Button, Icon, Left, Body, Right,View } from 'native-base';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
@@ -133,7 +133,7 @@ updateRooms(){
 				}
 			}
 	})
-	.then(() => {this.setState({isFetching: false, tempData: []})})
+	.then(() => {this.setState({isFetching: false, tempData: [], doneLoading: true})})
 }
 
 componentWillUnmount(){
@@ -223,65 +223,65 @@ onRefresh = (index) => {
 }
 
 renderItem = ({ item, index }) => {
-return (
-	<Content padder>
-		<Card>
-			<CardItem button
-				onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name, key: item._key})}>
-				<Left>
-					<Thumbnail source={require("../images/home.jpg")} />
-						<Body>
-							<Text>{item.name}</Text>
-						</Body>
-				</Left>
-					<Right>
-						<Text>Temperature: {item.temperature}°C</Text>
-					</Right>
-			</CardItem>
-				<CardItem style={{backgroundColor: '#EFEFF0'}}>
-					<Button style={{backgroundColor: this.state.data[index].buttonColor}} rounded iconLeft onPress={() => this.onRefresh(index)}>
-						<Icon name='power' />
-						<Text>{"Lights " + this.state.data[index].lights}</Text>
-					</Button>
-						<Body>
+		return (
+			<Content padder>
+				<Card>
+					<CardItem button
+						onPress={() => this.props.navigation.navigate("RoomScreenScreen",{name: item.name, key: item._key})}>
+						<Left>
+							<Thumbnail source={require("../images/home.jpg")} />
+								<Body>
+									<Text>{item.name}</Text>
+								</Body>
+						</Left>
 							<Right>
-								<Root>
-									<Button style={{position: "absolute", left: "35%"}} transparent iconRight onPress={() => ActionSheet.show({
-										options: BUTTONS,
-										cancelButtonIndex: CANCEL_INDEX,
-										destructiveButtonIndex: DESTRUCTIVE_INDEX,
-										title: "Room Settings"},
-										buttonIndex => {
-											if (buttonIndex == 0) {
-												this.props.navigation.navigate("EditNameScreen", {object: "CRUD_r/room", key: this.state.data[index]._key, returnScreen: "OverviewScreen", roomName: this.state.data[index].name})
-											}
-											if (buttonIndex == 1) {
-												Alert.alert(
-														'Are you sure?',
-														"",
-														[
-															{
-																text: 'Yes',
-																onPress: () => this.deleteRoom(item._key, item.name),
-															},
-															{
-																text: 'No',
-															},
-														],
-														{cancelable: false},
-													);
-											}
-										}
-										)}>
-										<Icon name='cog' />
-									</Button>
-								</Root>
+								<Text>Temperature: {item.temperature}°C</Text>
 							</Right>
-						</Body>
-				</CardItem>
-		</Card>
-	</Content>
-);
+					</CardItem>
+						<CardItem style={{backgroundColor: '#EFEFF0'}}>
+							<Button style={{backgroundColor: this.state.data[index].buttonColor}} rounded iconLeft onPress={() => this.onRefresh(index)}>
+								<Icon name='power' />
+								<Text>{"Lights " + this.state.data[index].lights}</Text>
+							</Button>
+								<Body>
+									<Right>
+										<Root>
+											<Button style={{position: "absolute", left: "35%"}} transparent iconRight onPress={() => ActionSheet.show({
+												options: BUTTONS,
+												cancelButtonIndex: CANCEL_INDEX,
+												destructiveButtonIndex: DESTRUCTIVE_INDEX,
+												title: "Room Settings"},
+												buttonIndex => {
+													if (buttonIndex == 0) {
+														this.props.navigation.navigate("EditNameScreen", {object: "CRUD_r/room", key: this.state.data[index]._key, returnScreen: "OverviewScreen", roomName: this.state.data[index].name})
+													}
+													if (buttonIndex == 1) {
+														Alert.alert(
+																'Are you sure?',
+																"",
+																[
+																	{
+																		text: 'Yes',
+																		onPress: () => this.deleteRoom(item._key, item.name),
+																	},
+																	{
+																		text: 'No',
+																	},
+																],
+																{cancelable: false},
+															);
+													}
+												}
+												)}>
+												<Icon name='cog' />
+											</Button>
+										</Root>
+									</Right>
+								</Body>
+						</CardItem>
+				</Card>
+			</Content>
+		);
 };
 
 deleteRoom(key, name){
