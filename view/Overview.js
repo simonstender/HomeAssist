@@ -39,7 +39,6 @@ constructor(props){
 
 componentDidMount(){
 	this._isMounted = true;
-	this.notif.sendNotif();
 	this.props.navigation.setParams({
 		headerRight: <TouchableOpacity onPress={() => this.props.navigation.navigate("AddRoomScreen", {pos: this.state.topPos})}>
 			<Icon style={{ height: 30, width: 64, left: 20, color: 'green' }} name="add"/>
@@ -133,7 +132,7 @@ updateRooms(){
 				}
 			}
 	})
-	.then(() => {this.setState({isFetching: false, tempData: [], doneLoading: true})})
+	.then(() => {this.setState({isFetching: false, tempData: [], doneLoading: true}),this.notif.sendNotif();})
 }
 
 componentWillUnmount(){
@@ -191,6 +190,7 @@ updateDevice(item, status, color){
 			buttonColor: color,
 		})
 	})
+	.then(() => this.notif.sendNotif())
 }
 
 onNotif(notif) {
@@ -212,9 +212,6 @@ onRefresh = (index) => {
 						this.state.data[index].buttonColor = "green";
 						this.updateRoom(this.state.data[index], "On", "green", "On")
 					}
-				setTimeout(() => {
-					this.notif.sendNotif();
-				}, 750)
 			this.setState({isFetching: false})
 		} else {
 			alert("No devices connected to this room")
@@ -241,7 +238,7 @@ renderItem = ({ item, index }) => {
 						<CardItem style={{backgroundColor: '#EFEFF0'}}>
 							<Button style={{backgroundColor: this.state.data[index].buttonColor}} rounded iconLeft onPress={() => this.onRefresh(index)}>
 								<Icon name='power' />
-								<Text>{"Lights " + this.state.data[index].lights}</Text>
+								<Text>{"Power " + this.state.data[index].lights}</Text>
 							</Button>
 								<Body>
 									<Right>

@@ -49,7 +49,7 @@ export default class Notification {
 		  vibrate: true,
 		  vibration: 300,
 		  ongoing: false,
-		  message: "All devices are currently on, consider turning some off to conserve electricity",
+		  message: "All devices are currently on, consider turning some off to conserve energy",
 		  playSound: true,
 		  soundName: 'default',
 		  actions: '',
