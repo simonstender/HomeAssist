@@ -154,12 +154,12 @@ render() {
   				<CardItem>
   					<Thumbnail source={require("../images/energy.png")} />
   						<Body>
-  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  							<Text style={{left: 8, top: 12}}>Monthly electricity Consumption</Text>
   						</Body>
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>
@@ -208,12 +208,12 @@ render() {
   				<CardItem>
   					<Thumbnail source={require("../images/energy.png")} />
   						<Body>
-  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  							<Text style={{left: 8, top: 12}}>Monthly electricity Consumption</Text>
   						</Body>
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>
@@ -262,12 +262,12 @@ render() {
   				<CardItem>
   					<Thumbnail source={require("../images/energy.png")} />
   						<Body>
-  							<Text style={{left: 8, top: 12}}>Monthly Energy Consumption</Text>
+  							<Text style={{left: 8, top: 12}}>Monthly electricity Consumption</Text>
   						</Body>
   						<Right>
   							<Icon style={{color: 'blue', fontSize: 24, position: "absolute", right: "10%", top: "-20%" }}
   							name='information-circle-outline'
-  							onPress={() => Alert.alert("Information", "An overview of the energy consumption")}/>
+  							onPress={() => Alert.alert("Information", "An overview of the electricity consumption")}/>
   						</Right>
   				</CardItem>
   					<CardItem style={{backgroundColor: '#EFEFF0'}}>
